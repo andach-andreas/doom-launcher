@@ -1,0 +1,129 @@
+type,name,category,spawnhealth,port
+1,Player 1 Start,Player Start,,Boom
+2,Player 2 Start,Player Start,,Boom
+3,Player 3 Start,Player Start,,Boom
+4,Player 4 Start,Player Start,,Boom
+5,Blue Keycard,Keycard,,Boom
+6,Yellow Keycard,Keycard,,Boom
+7,Spider Mastermind,Monsters,,Boom
+9,Former Human Sergeant,Monsters,,Boom
+11,Deathmatch Start,Player Start,,Boom
+13,Red Keycard,Keycard,,Boom
+16,Cyberdemon,Monsters,4000,Boom
+38,Red Skull Key,Keycard,,Boom
+39,Yellow Skull Key,Keycard,,Boom
+40,Blue Skull Key,Keycard,,Boom
+58,Spectre,Monsters,,Boom
+64,Arch-Vile,Monsters,,Boom
+65,Chaingunner,Monsters,,Boom
+66,Revenant,Monsters,,Boom
+67,Mancubus,Monsters,,Boom
+68,Arachnatron,Monsters,,Boom
+69,Hell Knight,Monsters,,Boom
+71,Pain Elemental,Monsters,,Boom
+72,Hanging Keen,Monsters,,Boom
+82,Super Shotgun,Weapons,,Boom
+84,Wolfenstein 3D SS,Monsters,,Boom
+87,Boss Spawn Spot,Monsters,,Boom+MBF
+88,Boss Brain,Monsters,,Boom
+2001,Shotgun,Weapons,,Boom
+2002,Chaingun,Weapons,,Boom
+2003,Rocket Launcher,Weapons,,Boom
+2004,Plasma Gun,Weapons,,Boom
+2005,Chainsaw,Weapons,,Boom
+2006,BFG9000,Weapons,,Boom
+2010,Rocket,Ammunition,,Boom
+2011,Shotgun Shells,Ammunition,,Boom
+8,Backpack,Ammunition,,Boom
+2011,Stimpack,Health and Armour,,Boom
+2012,Medikit,Health and Armour,,Boom
+2019,Blue Armor,Health and Armour,,Boom
+2013,Soulsphere,Powerups,,Boom
+83,Megasphere,Powerups,,Boom
+2018,Green Armor,Health and Armour,,Boom
+2046,Box of Rockets,Ammunition,,Boom
+3001,Imp,Monsters,,Boom
+3002,Demon,Monsters,,Boom
+3003,Baron of Hell,Monsters,,Boom
+3004,Former Human,Monsters,,Boom
+3005,Cacodemon,Monsters,,Boom
+3006,Lost Soul,Monsters,,Boom
+4001,Player 5 Start,Player Start,,Boom
+4002,Player 6 Start,Player Start,,Boom
+4003,Player 7 Start,Player Start,,Boom
+4004,Player 8 Start,Player Start,,Boom
+17,Energy Cell Pack,Ammunition,,Boom
+2007,Ammo Clip,Ammunition,,Boom
+2047,Energy Cell Pack,Ammunition,,Boom
+2048,Box of Ammo,Ammunition,,Boom
+2049,Box of Shells,Ammunition,,Boom
+2014,Health Potion,Health and Armour,,Boom
+2015,Amrmour Helmet,Health and Armour,,Boom
+2022,Invulnerability,Powerups,,Boom
+2023,Berserk Pack,Powerups,,Boom
+2024,Partial Invisibility,Powerups,,Boom
+2025,Radiation Suit,Powerups,,Boom
+2026,Computer Area Map,Powerups,,Boom
+2045,Lite-Amp Goggles,Powerups,,Boom
+14,Teleport Destination,Teleports,,Boom
+10,,Gore,,Boom
+12,,Gore,,Boom
+24,,Gore,,Boom
+27,,Gore,,Boom
+28,,Gore,,Boom
+29,,Gore,,Boom
+42,,Gore,,Boom
+79,,Gore,,Boom
+80,,Gore,,Boom
+81,,Gore,,Boom
+15,,Gore,,Boom
+18,,Gore,,Boom
+19,,Gore,,Boom
+20,,Gore,,Boom
+21,,Gore,,Boom
+22,,Gore,,Boom
+23,,Gore,,Boom
+25,,Gore,,Boom
+26,,Gore,,Boom
+49,,Gore,,Boom
+50,,Gore,,Boom
+51,,Gore,,Boom
+52,,Gore,,Boom
+53,,Gore,,Boom
+59,,Gore,,Boom
+60,,Gore,,Boom
+61,,Gore,,Boom
+62,,Gore,,Boom
+63,,Gore,,Boom
+73,,Gore,,Boom
+74,,Gore,,Boom
+75,,Gore,,Boom
+76,,Gore,,Boom
+77,,Gore,,Boom
+78,,Gore,,Boom
+30,,Decorations,,Boom
+31,,Decorations,,Boom
+32,,Decorations,,Boom
+33,,Decorations,,Boom
+36,,Decorations,,Boom
+37,,Decorations,,Boom
+41,,Decorations,,Boom
+43,,Decorations,,Boom
+47,,Decorations,,Boom
+48,,Decorations,,Boom
+54,,Decorations,,Boom
+2035,,Decorations,,Boom
+34,,Lighting,,Boom
+35,,Lighting,,Boom
+44,,Lighting,,Boom
+45,,Lighting,,Boom
+46,,Lighting,,Boom
+55,,Lighting,,Boom
+56,,Lighting,,Boom
+57,,Lighting,,Boom
+70,,Lighting,,Boom
+85,,Lighting,,Boom
+86,,Lighting,,Boom
+2028,,Lighting,,Boom
+89,Boss Shooter,Monsters,,Boom + MBF
+888,Helper Dog,Monsters,,Boom + MBF
