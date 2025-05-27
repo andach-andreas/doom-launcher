@@ -7,6 +7,7 @@ This project is in an early pre-alpha stage and is not ready for general use.
 ```
 composer install
 npm install
+php artisan migrate
 php artisan port:sync
 ```
 

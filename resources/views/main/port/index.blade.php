@@ -5,6 +5,7 @@
 @section('content')
     <div class="container">
         <h1>Ports</h1>
+        <p><a href="{{ route('port.sync') }}">Refresh Port List</a></p>
 
         <x-andach-table>
             <x-andach-thead>

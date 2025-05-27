@@ -17,6 +17,7 @@ Route::get('/map/{id}', [MapController::class, 'show'])->name('map.show');
 Route::get('/map/{id}/image', [MapController::class, 'render']);
 
 Route::get('/port', [PortController::class, 'index'])->name('port.index');
+Route::get('/port/sync', [PortController::class, 'sync'])->name('port.sync');
 Route::get('/port/{id}', [PortController::class, 'show'])->name('port.show');
 
 Route::get('/wad', [WadController::class, 'index'])->name('wad.index');
