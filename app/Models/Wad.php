@@ -216,12 +216,12 @@ class Wad extends Model
 
     public function getWadPathAttribute()
     {
-        return storage_path('/wads/'. $this->idgames_folder.'/'. $this->filename.'/'.$this->filename.'.wad');
+        return storage_path('wads/'. $this->idgames_path.'/'.$this->filename.'.wad');
     }
 
     public function getZipPathAttribute()
     {
-        return storage_path('/zips/'. $this->idgames_folder.'/'. $this->filename.'.zip');
+        return storage_path('zips/'. $this->idgames_folder.'/'. $this->filename.'.zip');
     }
 
     public function insertIntoDatabase()
