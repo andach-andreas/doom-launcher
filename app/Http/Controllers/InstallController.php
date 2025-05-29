@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Install;
+use App\Models\Map;
 use App\Models\Wad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class InstallController extends Controller
         return redirect()->route('install.show', $id);
     }
 
-    public function play(int $id, int $wadID)
+    public function play(int $id, int $wadID, int $mapID = 0)
     {
         $install = Install::findOrFail($id);
         $wad = Wad::findOrFail($wadID);
@@ -48,11 +49,21 @@ class InstallController extends Controller
             return response()->json(['status' => 'error', 'message' => 'WAD file not found'], 404);
         }
 
+        $warp = '';
+
+        if ($mapID > 0) {
+            $map = Map::find($mapID);
+            if ($map && $map->internal_name) {
+                $warp = '-warp ' . preg_replace('/^(MAP|E)(\d)(M?)(\d)?$/i', '$2 $4', $map->internal_name);
+            }
+        }
+
         $command = sprintf(
-            'start "" "%s" -iwad "%s" -file "%s"',
+            'start "" "%s" -iwad "%s" -file "%s" %s',
             $exe,
             $iwad,
-            $wadFile
+            $wadFile,
+            trim($warp)
         );
 
         Log::info('Launching WAD with command: ' . $command);

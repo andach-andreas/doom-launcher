@@ -11,7 +11,7 @@ Route::get('/', [HomeController::class, 'home'])->name('home');
 
 Route::get('/install/{id}', [InstallController::class, 'show'])->name('install.show');
 Route::get('/install/{id}/extract', [InstallController::class, 'extract'])->name('install.extract');
-Route::get('/install/{id}/play/{wadID}', [InstallController::class, 'play'])->name('install.play');
+Route::get('/install/{id}/play/{wadID}/{mapID?}', [InstallController::class, 'play'])->name('install.play');
 
 Route::get('/map/{id}', [MapController::class, 'show'])->name('map.show');
 Route::get('/map/{id}/image', [MapController::class, 'render']);

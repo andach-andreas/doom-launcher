@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Map;
 use App\Models\Wad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -31,6 +32,14 @@ class WadController extends Controller
             ['id' => $wadData['id']],
             $wadData
         );
+
+        // Import maps if present
+        if (isset($wadData['maps']) && is_array($wadData['maps'])) {
+            foreach ($wadData['maps'] as $mapData) {
+                $mapData['wad_id'] = $wad->id;
+                Map::create($mapData);
+            }
+        }
 
         // Prepare paths
         $zipUrl = "https://doomwads.andach.co.uk/zips/{$wadData['idgames_path']}.zip";

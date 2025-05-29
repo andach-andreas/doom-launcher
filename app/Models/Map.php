@@ -18,7 +18,18 @@ class Map extends Model
     public array $weaponsAvailable = [];
     public int $weaponsCount = 0;
 
-    protected $fillable = ['music_lump_id', 'next_level_map_id', 'next_secret_level_map_id', 'wad_id', 'name'];
+    protected $fillable = [
+        'id',
+        'wad_id',
+        'internal_name',
+        'name',
+        'image_path',
+        'count_things',
+        'count_linedefs',
+        'count_sidedefs',
+        'count_vertexes',
+        'count_sectors',
+    ];
 
     public function linedefs()
     {

@@ -57,20 +57,15 @@ return new class extends Migration
 
         Schema::create('maps', function (Blueprint $table) {
             $table->id();
-            $table->integer('music_lump_id')->nullable();
-            $table->integer('next_level_map_id')->nullable();
-            $table->integer('next_secret_level_map_id')->nullable();
             $table->integer('wad_id');
-            $table->string('name');
-            $table->integer('things')->default(0);
-            $table->integer('linedefs')->default(0);
-            $table->integer('sidedefs')->default(0);
-            $table->integer('vertexes')->default(0);
-            $table->integer('segs')->default(0);
-            $table->integer('ssectors')->default(0);
-            $table->integer('nodes')->default(0);
-            $table->integer('sectors')->default(0);
-            $table->integer('secretSectors')->default(0);
+            $table->string('internal_name'); // e.g. E1M1, MAP01
+            $table->string('name')->nullable(); // Human-readable map name
+            $table->string('image_path')->nullable();
+            $table->unsignedInteger('count_things')->default(0);
+            $table->unsignedInteger('count_linedefs')->default(0);
+            $table->unsignedInteger('count_sidedefs')->default(0);
+            $table->unsignedInteger('count_vertexes')->default(0);
+            $table->unsignedInteger('count_sectors')->default(0);
             $table->timestamps();
         });
 

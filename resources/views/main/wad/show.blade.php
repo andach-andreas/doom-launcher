@@ -34,16 +34,16 @@
                     <x-andach-th>Name</x-andach-th>
                     <x-andach-th>Things</x-andach-th>
                     <x-andach-th>Sectors</x-andach-th>
-                    <x-andach-th>Secrets</x-andach-th>
+                    <x-andach-th>Play</x-andach-th>
                 </tr>
             </x-andach-thead>
             <x-andach-tbody>
                 @foreach ($wad->maps as $map)
                     <tr>
-                        <x-andach-td><a href="{{ route('map.show', $map->id) }}">{{ $map->name }}</a></x-andach-td>
-                        <x-andach-td>{{ $map->things }}</x-andach-td>
-                        <x-andach-td>{{ $map->sectors }}</x-andach-td>
-                        <x-andach-td>{{ $map->secretSectors }}</x-andach-td>
+                        <x-andach-td><a href="{{ route('map.show', $map->id) }}">{{ $map->internal_name }}</a></x-andach-td>
+                        <x-andach-td>{{ $map->count_things }}</x-andach-td>
+                        <x-andach-td>{{ $map->count_sectors }}</x-andach-td>
+                        <x-andach-td><a href="{{ route('install.play', [68, $map->wad->id, $map->id]) }}">Play on DSDA</a></x-andach-td>
                     </tr>
                 @endforeach
             </x-andach-tbody>
