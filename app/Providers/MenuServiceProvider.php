@@ -73,7 +73,7 @@ class MenuServiceProvider extends ServiceProvider
             'currentlySelected' => 'port' === $firstPartOfRoute,
             'parentRoute'       => 'port.index',
             'routePrefix'       => 'port',
-            'svg'               => '<i class="fa-solid fa-photo-film"></i>',
+            'svg'               => '<i class="fa-solid fa-square-binary"></i>',
             'items'             => [],
         ];
 
@@ -81,7 +81,7 @@ class MenuServiceProvider extends ServiceProvider
             'currentlySelected' => 'wad' === $firstPartOfRoute,
             'parentRoute'       => 'wad.index',
             'routePrefix'       => 'wad',
-            'svg'               => '<i class="fa-solid fa-photo-film"></i>',
+            'svg'               => '<i class="fa-solid fa-layer-group"></i>',
             'items'             => [],
         ];
 

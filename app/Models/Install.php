@@ -113,4 +113,9 @@ class Install extends Model
     {
         return 'zip/' . $this->port->slug . '/' . $this->version . '.zip';
     }
+
+    public function scopeInstalled($query)
+    {
+        return $query->whereNotNull('extracted_at');
+    }
 }

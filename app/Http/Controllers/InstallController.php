@@ -53,8 +53,8 @@ class InstallController extends Controller
 
         if ($mapID > 0) {
             $map = Map::find($mapID);
-            if ($map && $map->internal_name) {
-                $warp = '-warp ' . preg_replace('/^(MAP|E)(\d)(M?)(\d)?$/i', '$2 $4', $map->internal_name);
+            if ($map && $map->warp_command) {
+                $warp = $map->warp_command;
             }
         }
 

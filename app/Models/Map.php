@@ -89,6 +89,28 @@ class Map extends Model
         return $relativePath ? asset("storage/$relativePath") : '';
     }
 
+    public function getWarpCommandAttribute()
+    {
+        if (!$this->internal_name) {
+            return '';
+        }
+
+        // Handle Doom 1 style: ExMx (e.g., E1M3)
+        if (preg_match('/^(E)(\d)(M?)(\d)?$/i', $this->internal_name, $matches)) {
+            $episode = $matches[2];
+            $map = $matches[4] ?? '1'; // default to 1 if not present
+            return "-warp $episode $map";
+        }
+
+        // Handle Doom 2 style: MAPxx (e.g., MAP02)
+        if (preg_match('/^MAP(\d{2})$/i', $this->internal_name, $matches)) {
+            $mapNumber = (int) $matches[1];
+            return "-warp $mapNumber";
+        }
+
+        return '';
+    }
+
     public function insertIntoDatabase()
     {
         $this->insertIntoDatabaseStats();
