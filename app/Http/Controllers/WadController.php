@@ -4,15 +4,66 @@ namespace App\Http\Controllers;
 
 use App\Models\Wad;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class WadController extends Controller
 {
-    public function downloadAndExtract($id)
+    public function downloadAndExtract(Request $request)
     {
-        $wad = Wad::find($id);
-        $wad->downloadAndExtract();
+        $wadName = $request->post('wadName');
+        $response = Http::get("https://doomwads.andach.co.uk/api/v1/wad/{$wadName}");
+        if (!$response->successful()) {
+            abort(404, "Wad not found or API request failed.");
+        }
 
-        return redirect()->route('wad.show', $id);
+        $json = $response->json();
+
+        if ($json['status'] !== 'success' || !isset($json['data']['wad'])) {
+            abort(404, "Invalid API response.");
+        }
+
+        $wadData = $json['data']['wad'];
+
+        // Find or create Wad model by id or filename (depending on your logic)
+        $wad = Wad::updateOrCreate(
+            ['id' => $wadData['id']],
+            $wadData
+        );
+
+        // Prepare paths
+        $zipUrl = "https://doomwads.andach.co.uk/zips/{$wadData['idgames_path']}.zip";
+        $zipStoragePath = "zips/{$wadData['idgames_path']}.zip";
+        $extractPath = "wads/{$wadData['idgames_path']}";
+
+        // Download ZIP to storage disk 'zips'
+        $zipContent = Http::get($zipUrl)->body();
+        Storage::disk('zips')->put("{$wadData['idgames_path']}.zip", $zipContent);
+
+        // Unzip to storage disk 'wads'
+        $zipFullPath = Storage::disk('zips')->path("{$wadData['idgames_path']}.zip");
+
+        $zip = new ZipArchive;
+
+        if ($zip->open($zipFullPath) === TRUE) {
+            $extractFullPath = Storage::disk('wads')->path($wadData['idgames_path']);
+
+            if (!is_dir($extractFullPath)) {
+                $success = mkdir($extractFullPath, 0755, true);
+            }
+
+            $zip->extractTo($extractFullPath);
+
+            $zip->close();
+        } else {
+            // Debug: zip open failure
+            dd('Failed to open ZIP file.', ['zipFullPath' => $zipFullPath]);
+        }
+
+        session()->flash('success', 'Wad downloaded, saved, and extracted successfully.');
+
+        return redirect()->route('wads.index');
     }
 
     public function index()

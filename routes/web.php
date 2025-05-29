@@ -21,7 +21,7 @@ Route::get('/port/sync', [PortController::class, 'sync'])->name('port.sync');
 Route::get('/port/{id}', [PortController::class, 'show'])->name('port.show');
 
 Route::get('/wad', [WadController::class, 'index'])->name('wad.index');
-Route::get('/wad/{id}/download-and-extract', [WadController::class, 'downloadAndExtract'])->name('wad.download-and-extract');
+Route::post('/wad/download-and-extract', [WadController::class, 'downloadAndExtract'])->name('wad.download-and-extract');
 Route::get('/wad/{id}/insert-into-database', [WadController::class, 'insertIntoDatabase'])->name('wad.insert-into-database');;
 Route::get('/wad/{id}/text', [WadController::class, 'text'])->name('wad.text');;
 Route::get('/wad/{id}', [WadController::class, 'show'])->name('wad.show');

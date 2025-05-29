@@ -161,15 +161,57 @@ return new class extends Migration
 
         Schema::create('wads', function (Blueprint $table) {
             $table->id();
+
             $table->string('filename');
-            $table->string('name')->nullable();
-            $table->integer('comp_level_id')->nullable();
-            $table->string('iwad');
-            $table->boolean('freelook')->default(false);
-            $table->boolean('jump')->default(false);
-            $table->boolean('crouch')->default(false);
-            $table->timestamp('downloaded_at')->nullable();
-            $table->timestamp('extracted_at')->nullable();
+            $table->string('filename_with_extension');
+            $table->string('idgames_path');
+            $table->integer('complevel')->nullable();
+            $table->integer('maps_count')->nullable();
+            $table->integer('linedefs_count')->nullable();
+            $table->integer('sidedefs_count')->nullable();
+            $table->integer('vertexes_count')->nullable();
+            $table->integer('textures_count')->nullable();
+            $table->integer('things_count')->nullable();
+            $table->integer('sectors_count')->nullable();
+            $table->string('iwad')->nullable();
+
+            // From Text File
+            $table->text('archive_maintainer')->nullable();
+            $table->text('update_to')->nullable();
+            $table->text('advanced_engine_needed')->nullable();
+            $table->text('primary_purpose')->nullable();
+            $table->text('title')->nullable();
+            $table->text('release_date')->nullable();
+            $table->text('author')->nullable();
+            $table->text('email_address')->nullable();
+            $table->text('other_files_by_author')->nullable();
+            $table->text('misc_author_info')->nullable();
+            $table->text('description')->nullable();
+            $table->text('credits')->nullable();
+            $table->text('new_levels')->nullable();
+            $table->text('sounds')->nullable();
+            $table->text('music')->nullable();
+            $table->text('graphics')->nullable();
+            $table->text('dehacked_patch')->nullable();
+            $table->text('demos')->nullable();
+            $table->text('other')->nullable();
+            $table->text('other_files_required')->nullable();
+            $table->text('game')->nullable();
+            $table->text('map')->nullable();
+            $table->text('single_player')->nullable();
+            $table->text('coop')->nullable();
+            $table->text('deathmatch')->nullable();
+            $table->text('other_game_styles')->nullable();
+            $table->text('difficulty_settings')->nullable();
+            $table->text('base')->nullable();
+            $table->text('build_time')->nullable();
+            $table->text('editors_used')->nullable();
+            $table->text('known_bugs')->nullable();
+            $table->text('may_not_run_with')->nullable();
+            $table->text('tested_with')->nullable();
+            $table->text('where_to_get_web')->nullable();
+            $table->text('where_to_get_ftp')->nullable();
+
             $table->timestamps();
         });
 

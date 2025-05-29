@@ -1,10 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Ports')
+@section('title', 'Wads')
 
 @section('content')
     <div class="container">
-        <h1>Ports</h1>
+        <h1>Wads</h1>
+
+        <form method="POST" action="{{ route('wad.download-and-extract', ['wadName' => '']) }}" onsubmit="event.preventDefault(); this.action = this.action.replace(/wad\/$/, 'wad/' + encodeURIComponent(this.wadName.value) + '/download-and-extract'); this.submit();">
+            @csrf
+            <input type="text" name="wadName" placeholder="Enter WAD Name" required>
+            <button type="submit">Download and Extract WAD</button>
+        </form>
 
         <x-andach-table>
             <x-andach-thead>
