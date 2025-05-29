@@ -206,11 +206,21 @@ class Wad extends Model
 
     public function getTextFileContentsAttribute(): string
     {
-        $subdir = $this->idgames_folder; // e.g., 'a-c'
+        $folder = Storage::disk('wads')->path($this->idgames_path);
         $wadName = $this->filename;
-        $path = storage_path("wads/{$subdir}/{$wadName}/{$wadName}.txt");
+        $primaryPath = $folder . DIRECTORY_SEPARATOR . $wadName . '.txt';
 
-        return file_exists($path) ? file_get_contents($path) ?: '' : '';
+        if (file_exists($primaryPath)) {
+            return file_get_contents($primaryPath) ?: '';
+        }
+
+        $txtFiles = glob($folder . DIRECTORY_SEPARATOR . '*.txt');
+
+        if (!empty($txtFiles)) {
+            return file_get_contents($txtFiles[0]) ?: '';
+        }
+
+        return '';
     }
 
 

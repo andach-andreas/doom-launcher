@@ -63,7 +63,7 @@ class WadController extends Controller
 
         session()->flash('success', 'Wad downloaded, saved, and extracted successfully.');
 
-        return redirect()->route('wads.index');
+        return redirect()->route('wad.index');
     }
 
     public function index()
