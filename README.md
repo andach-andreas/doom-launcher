@@ -19,7 +19,10 @@ php artisan native:serve
 
 ## Build
 
+Stop the local NPM Dev server if it is running, then run:
+
 ```bash
+npm run build
 php artisan native:build
 ```
 
