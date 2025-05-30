@@ -3,6 +3,22 @@
 @section('title', 'Andach Doom')
 
 @section('content')
+    @php
+        $missingIwads = [];
+        if (!Storage::disk('iwads')->exists('DOOM.WAD')) {
+            $missingIwads[] = 'DOOM.WAD';
+        }
+        if (!Storage::disk('iwads')->exists('DOOM2.WAD')) {
+            $missingIwads[] = 'DOOM2.WAD';
+        }
+    @endphp
+
+    @if (!empty($missingIwads))
+        <x-andach-alert color="red">
+            Missing IWAD files: {{ implode(', ', $missingIwads) }}. Please upload them to the <b>{{ storage_path() }}/iwads</b> folder.
+        </x-andach-alert>
+    @endif
+
     <x-andach-card title="Instructions">
         <p>This is a program to manage Doom installations, demo playback and recording on Windows computers. This is currently in a pre-alpha stage and not ready for general use.</p>
     </x-andach-card>
