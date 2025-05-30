@@ -11,10 +11,16 @@ php artisan migrate
 php artisan port:sync
 ```
 
-## Use
+## Run Dev Copy
 
 ```
 php artisan native:serve
+```
+
+## Build
+
+```bash
+php artisan native:build
 ```
 
 ## Storage
