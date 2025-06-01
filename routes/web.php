@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DSDAController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallController;
 use App\Http\Controllers\MapController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\WadController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
+
+Route::get('/dsda/{wadID}', [DSDAController::class, 'sync'])->name('dsda.sync');
 
 Route::post('/install/play/', [InstallController::class, 'play'])->name('install.play');
 Route::get('/install/{id}', [InstallController::class, 'show'])->name('install.show');

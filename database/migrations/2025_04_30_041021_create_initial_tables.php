@@ -16,6 +16,35 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('demos', function (Blueprint $table) {
+            $table->integer('id')->primary(); // Using third-party demo ID as primary key
+            $table->integer('map_id')->nullable();
+            $table->integer('wad_id');
+            $table->string('category');
+            $table->string('player');
+            $table->string('engine');
+            $table->string('note')->nullable();
+            $table->string('time');
+            $table->string('lmp_file')->nullable();
+            $table->string('lmp_url_zip');
+            $table->text('lmp_text_file')->nullable();
+            $table->string('youtube_id')->nullable();
+            $table->string('youtube_link')->nullable();
+            $table->string('comment')->nullable();
+
+            $table->string('version')->nullable();
+            $table->integer('skill_number')->nullable();
+            $table->integer('mode_number')->nullable();
+            $table->boolean('respawn')->nullable();
+            $table->boolean('fast')->nullable();
+            $table->boolean('nomonsters')->nullable();
+            $table->boolean('number_of_players')->nullable();
+            $table->integer('tics')->nullable();
+            $table->integer('seconds')->nullable();
+
+            $table->timestamps();
+        });
+
         Schema::create('installs', function (Blueprint $table) {
             $table->id();
             $table->integer('port_id');

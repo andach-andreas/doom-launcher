@@ -23,7 +23,7 @@ class MapController extends Controller
 
     public function show($id)
     {
-        $args =[];
+        $args = [];
         $args['map'] = Map::find($id);
 
         return view('main.map.show', $args);

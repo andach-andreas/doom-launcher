@@ -73,6 +73,11 @@ class Wad extends Model
         return $this->belongsTo(CompLevel::class);
     }
 
+    public function demosLink()
+    {
+        return $this->hasMany(Demo::class, 'wad_id');
+    }
+
     public function installs(): BelongsToMany
     {
         return $this->belongsToMany(Install::class, 'link_installs_wads')
