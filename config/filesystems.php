@@ -68,6 +68,14 @@ return [
             'report' => false,
         ],
 
+        'demos' => [
+            'driver' => 'local',
+            'root' => storage_path('demos'),
+            'serve' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'installs' => [
             'driver' => 'local',
             'root' => storage_path('installs'),

@@ -95,6 +95,13 @@ class WadController extends Controller
     {
         $args = [];
         $args['wad'] = Wad::find($id);
+        $args['skills'] = [
+            1 => "I'm too young to die",
+            2 => "Hey, not too rough",
+            3 => "Hurt me plenty",
+            4 => "Ultra-Violence",
+            5 => "Nightmare!"
+        ];
 
         return view('main.wad.show', $args);
     }

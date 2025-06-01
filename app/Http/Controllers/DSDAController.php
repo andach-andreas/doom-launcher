@@ -7,6 +7,7 @@ use App\Models\Wad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DSDAController extends Controller
 {
@@ -35,6 +36,27 @@ class DSDAController extends Controller
 
                     $demoData['wad_id'] = $wad->id;
                     $demoData['map_id'] = $map->id;
+
+                    if (!empty($demoData['lmp_file'])) {
+                        $remoteUrl = 'https://doomwads.andach.co.uk/demos/' . trim($demoData['lmp_file'], '/');
+                        $relativePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $demoData['lmp_file']);
+                        $fullPath = Storage::disk('demos')->path($relativePath);
+
+                        // Ensure the folder exists
+                        $folder = dirname($relativePath);
+                        Storage::disk('demos')->makeDirectory($folder);
+
+                        try {
+                            $response = Http::get($remoteUrl);
+                            if ($response->successful()) {
+                                Storage::disk('demos')->put($relativePath, $response->body());
+                            } else {
+                                Log::error("Failed to download LMP file: {$remoteUrl}", ['status' => $response->status()]);
+                            }
+                        } catch (\Exception $e) {
+                            Log::error("Exception downloading LMP file: {$remoteUrl}", ['error' => $e->getMessage()]);
+                        }
+                    }
 
                     // Upsert the demo record using ID
                     Demo::updateOrCreate(

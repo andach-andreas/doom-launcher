@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Demo;
 use App\Models\Install;
 use App\Models\Map;
 use App\Models\Wad;
@@ -38,11 +39,11 @@ class InstallController extends Controller
             'complevel' => 'nullable|integer',
             'skill' => 'nullable|integer|min:1|max:5',
             'record' => 'nullable|boolean',
+            'demo_id' => 'nullable|integer|exists:demos,id',
         ]);
 
         $install = Install::findOrFail($validated['install_id']);
         $wad = Wad::findOrFail($validated['wad_id']);
-        $mapID = $validated['map_id'] ?? 0;
         $complevel = $validated['complevel'] ?? $wad->complevel;
         $skill = $validated['skill'] ?? 4;
         $record = $validated['record'] ?? false;
@@ -63,9 +64,35 @@ class InstallController extends Controller
             return response()->json(['status' => 'error', 'message' => 'WAD file not found'], 404);
         }
 
+        if (!empty($validated['demo_id'])) {
+            $demo = Demo::findOrFail($validated['demo_id']);
+            $lmpPath = Storage::disk('demos')->path($demo->lmp_file);
+
+            if (!file_exists($lmpPath)) {
+                return response()->json(['status' => 'error', 'message' => 'LMP file not found'], 404);
+            }
+
+            $command = sprintf(
+                'start "" "%s" -iwad "%s" -file "%s" -playdemo "%s"',
+                $exe,
+                $iwad,
+                $wadFile,
+                $lmpPath
+            );
+
+            Log::info('Launching demo playback with command: ' . $command);
+
+            pclose(popen("cmd /c $command", "r"));
+
+            return response()->json([
+                'status' => 'demo_playback_launched',
+                'command' => $command,
+            ]);
+        }
+
         $warp = '';
-        if ($mapID > 0) {
-            $map = Map::find($mapID);
+        if (!empty($validated['map_id'])) {
+            $map = Map::find($validated['map_id']);
             if ($map && $map->warp_command) {
                 $warp = $map->warp_command;
             }
@@ -75,9 +102,8 @@ class InstallController extends Controller
         if ($record) {
             $folder = $wad->filename;
             $filename = now()->format('Y-m-d_H-i-s');
-            $path = Storage::disk('attempts')->path("{$folder}/{$filename}.lmp");
-            // Ensure directory exists
             Storage::disk('attempts')->makeDirectory($folder);
+            $path = Storage::disk('attempts')->path("{$folder}/{$filename}.lmp");
             $recordCmd = '-record "' . $path . '"';
         }
 

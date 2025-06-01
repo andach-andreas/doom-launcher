@@ -61,7 +61,13 @@
                                 <input type="hidden" name="install_id" value="68">
                                 <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                                 <input type="hidden" name="map_id" value="{{ $map->id }}">
-                                <input type="hidden" name="skill" value="4">
+                                <select name="skill">
+                                    @foreach ($skills as $value => $label)
+                                        <option value="{{ $value }}" {{ $value === 4 ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 <button type="submit">Record Demo</button>
                             </form>
                         </x-andach-td>
@@ -88,10 +94,14 @@
                     <x-andach-td>{{ $demo->category }}</x-andach-td>
                     <x-andach-td>{{ $demo->time }}</x-andach-td>
                     <x-andach-td>
-                        @php
-                        dd($demo)
-                        @endphp
-
+                        <form method="POST" action="{{ route('install.play') }}">
+                            @csrf
+                            <input type="hidden" name="install_id" value="68">
+                            <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
+                            <input type="hidden" name="map_id" value="{{ $map->id }}">
+                            <input type="hidden" name="demo_id" value="{{ $demo->id }}">
+                            <button type="submit">Playback Demo</button>
+                        </form>
                     </x-andach-td>
                 </tr>
             @endforeach
