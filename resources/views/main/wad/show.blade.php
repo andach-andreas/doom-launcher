@@ -43,7 +43,17 @@
                         <x-andach-td><a href="{{ route('map.show', $map->id) }}">{{ $map->internal_name }}</a></x-andach-td>
                         <x-andach-td>{{ $map->count_things }}</x-andach-td>
                         <x-andach-td>{{ $map->count_sectors }}</x-andach-td>
-                        <x-andach-td><a href="{{ route('install.play', [68, $map->wad->id, $map->id]) }}">Play on DSDA</a></x-andach-td>
+                        <x-andach-td>
+                            <form method="POST" action="{{ route('install.play') }}">
+                                @csrf
+                                <input type="hidden" name="install_id" value="68">
+                                <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
+                                <input type="hidden" name="map_id" value="{{ $map->id }}">
+                                <input type="hidden" name="skill" value="4">
+                                <input type="hidden" name="record" value="1">
+                                <button type="submit">Play {{ $map->internal_name }}</button>
+                            </form>
+                        </x-andach-td>
                     </tr>
                 @endforeach
             </x-andach-tbody>

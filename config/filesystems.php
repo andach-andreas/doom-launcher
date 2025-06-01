@@ -60,6 +60,14 @@ return [
             'report' => false,
         ],
 
+        'attempts' => [
+            'driver' => 'local',
+            'root' => storage_path('attempts'),
+            'serve' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'installs' => [
             'driver' => 'local',
             'root' => storage_path('installs'),

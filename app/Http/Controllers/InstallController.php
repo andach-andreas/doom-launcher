@@ -7,6 +7,7 @@ use App\Models\Map;
 use App\Models\Wad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
 
 class InstallController extends Controller
@@ -28,10 +29,23 @@ class InstallController extends Controller
         return redirect()->route('install.show', $id);
     }
 
-    public function play(int $id, int $wadID, int $mapID = 0)
+    public function play(Request $request)
     {
-        $install = Install::findOrFail($id);
-        $wad = Wad::findOrFail($wadID);
+        $validated = $request->validate([
+            'install_id' => 'required|integer|exists:installs,id',
+            'wad_id' => 'required|integer|exists:wads,id',
+            'map_id' => 'nullable|integer|exists:maps,id',
+            'complevel' => 'nullable|integer',
+            'skill' => 'nullable|integer|min:1|max:5',
+            'record' => 'nullable|boolean',
+        ]);
+
+        $install = Install::findOrFail($validated['install_id']);
+        $wad = Wad::findOrFail($validated['wad_id']);
+        $mapID = $validated['map_id'] ?? 0;
+        $complevel = $validated['complevel'] ?? $wad->complevel;
+        $skill = $validated['skill'] ?? 4;
+        $record = $validated['record'] ?? false;
 
         $exe = $install->executable_path;
         $iwad = $wad->iwad_path;
@@ -50,7 +64,6 @@ class InstallController extends Controller
         }
 
         $warp = '';
-
         if ($mapID > 0) {
             $map = Map::find($mapID);
             if ($map && $map->warp_command) {
@@ -58,12 +71,25 @@ class InstallController extends Controller
             }
         }
 
+        $recordCmd = '';
+        if ($record) {
+            $folder = $wad->filename;
+            $filename = now()->format('Y-m-d_H-i-s');
+            $path = Storage::disk('attempts')->path("{$folder}/{$filename}.lmp");
+            // Ensure directory exists
+            Storage::disk('attempts')->makeDirectory($folder);
+            $recordCmd = '-record "' . $path . '"';
+        }
+
         $command = sprintf(
-            'start "" "%s" -iwad "%s" -file "%s" %s',
+            'start "" "%s" -iwad "%s" -file "%s" -skill %d -complevel %d %s %s',
             $exe,
             $iwad,
             $wadFile,
-            trim($warp)
+            $skill,
+            $complevel,
+            $warp,
+            $recordCmd
         );
 
         Log::info('Launching WAD with command: ' . $command);
@@ -75,6 +101,7 @@ class InstallController extends Controller
             'command' => $command,
         ]);
     }
+
 
     public function show($id)
     {
