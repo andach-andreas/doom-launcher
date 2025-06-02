@@ -113,7 +113,8 @@
     <x-andach-table>
         <x-andach-thead>
             <tr>
-                <x-andach-th>Map</x-andach-th>
+                <x-andach-th>Map Attempted</x-andach-th>
+                <x-andach-th>Map Completed</x-andach-th>
                 <x-andach-th>Category</x-andach-th>
                 <x-andach-th>Time</x-andach-th>
                 <x-andach-th>Playback</x-andach-th>
@@ -123,6 +124,7 @@
             @foreach ($wad->attempts as $attempt)
                 <tr>
                     <x-andach-td>{{ $attempt->map->internal_name ?? '' }}</x-andach-td>
+                    <x-andach-td>{{ $attempt->mapCompleted->internal_name ?? '' }}</x-andach-td>
                     <x-andach-td>{{ $attempt->category }}</x-andach-td>
                     <x-andach-td>{{ $attempt->time }}</x-andach-td>
                     <x-andach-td>

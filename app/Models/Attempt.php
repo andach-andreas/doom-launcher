@@ -13,6 +13,7 @@ class Attempt extends Model
     protected $fillable = [
         'id',
         'map_id',
+        'map_completed_id',
         'wad_id',
         'category',
         'time',
@@ -31,6 +32,11 @@ class Attempt extends Model
     public function map()
     {
         return $this->belongsTo(Map::class);
+    }
+
+    public function mapCompleted()
+    {
+        return $this->belongsTo(Map::class, 'map_completed_id');
     }
 
     public function wad()
@@ -91,7 +97,7 @@ class Attempt extends Model
         return 'Other';
     }
 
-    public function extractAnalaysisAndLevelstat($wad): string
+    public function extractAnalaysisAndLevelstat($wad): void
     {
         $install = Install::find(68);
         $fullPath = Storage::disk('attempts')->path($this->lmp_file);
@@ -107,6 +113,17 @@ class Attempt extends Model
         $analysisFile = $workingDir . DIRECTORY_SEPARATOR . 'analysis.txt';
         $exportTextFile = $workingDir . DIRECTORY_SEPARATOR . $baseName . '.txt';
         $levelstatFile = $workingDir . DIRECTORY_SEPARATOR . 'levelstat.txt';
+
+        $renamedAnalysis = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_analysis.txt';
+        $renamedExportText = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_description.txt';
+        $renamedLevelstat = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_levelstat.txt';
+
+        if (file_exists($renamedAnalysis) && file_exists($renamedExportText)) {
+            $this->updateCategoryFromAnalysis();
+            $this->updateMapFromLevelstat();
+
+            return;
+        }
 
         // Build DSDA-Doom command
         $command = [
@@ -125,9 +142,6 @@ class Attempt extends Model
         $process->run();
 
         // Rename output files if they exist
-        $renamedAnalysis = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_analysis.txt';
-        $renamedExportText = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_description.txt';
-        $renamedLevelstat = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_levelstat.txt';
 
         if (file_exists($analysisFile)) {
             rename($analysisFile, $renamedAnalysis);
@@ -143,8 +157,6 @@ class Attempt extends Model
 
         $this->updateCategoryFromAnalysis();
         $this->updateMapFromLevelstat();
-
-        return file_exists($renamedAnalysis) ? file_get_contents($renamedAnalysis) : 'analysis failed';
     }
 
     public function parseAnalysisData(): ?array
@@ -195,7 +207,7 @@ class Attempt extends Model
         if (count($levelLines) === 1) {
             $mapInternalName = substr(reset($levelLines), 0, 4);
 
-            $this->map_id = Map::where('internal_name', $mapInternalName)
+            $this->map_completed_id = Map::where('internal_name', $mapInternalName)
                 ->where('wad_id', $this->wad_id)
                 ->first()
                 ->id;

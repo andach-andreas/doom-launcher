@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::create('attempts', function (Blueprint $table) {
             $table->integer('id')->primary();
             $table->integer('map_id')->nullable();
+            $table->integer('map_completed_id')->nullable();
             $table->integer('wad_id');
             $table->string('category')->nullable();
             $table->string('time')->nullable();

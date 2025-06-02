@@ -3,6 +3,7 @@
 ## v0.0.2 (In progress)
 
 * Record demos. 
+* Analyse demos and categorise. 
 
 ## v0.0.1
 
