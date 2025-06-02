@@ -45,7 +45,11 @@ class InstallController extends Controller
 
         $install = Install::findOrFail($validated['install_id']);
         $wad = Wad::findOrFail($validated['wad_id']);
-        $complevel = $validated['complevel'] ?? $wad->complevel;
+        $complevel = $validated['complevel'] ?? match ($wad->iwad) {
+            'doom' => 2,
+            'doom2' => 4,
+            default => $wad->complevel,
+        };
         $skill = $validated['skill'] ?? 4;
         $record = $validated['record'] ?? false;
 
