@@ -11,9 +11,11 @@
     "require": {
         "php": "^8.2",
         "andach/laravel-view-components": "^1.0",
+        "andach/php-doom-wad-analysis": "dev-main",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "nativephp/electron": "^1.0"
+        "nativephp/electron": "^1.0",
+        "symfony/console": "7.2.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -79,6 +81,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

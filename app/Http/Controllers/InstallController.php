@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attempt;
 use App\Models\Demo;
 use App\Models\Install;
 use App\Models\Map;
@@ -91,11 +92,13 @@ class InstallController extends Controller
         }
 
         $warp = '';
+        $attemptInsert = ['wad_id' => $validated['wad_id']];
         if (!empty($validated['map_id'])) {
             $map = Map::find($validated['map_id']);
             if ($map && $map->warp_command) {
                 $warp = $map->warp_command;
             }
+            $attemptInsert['map_id'] = $validated['map_id'];
         }
 
         $recordCmd = '';
@@ -103,7 +106,11 @@ class InstallController extends Controller
             $folder = $wad->filename;
             $filename = now()->format('Y-m-d_H-i-s');
             Storage::disk('attempts')->makeDirectory($folder);
+            $attemptInsert['lmp_file'] = "{$folder}/{$filename}.lmp";
             $path = Storage::disk('attempts')->path("{$folder}/{$filename}.lmp");
+
+            Attempt::create($attemptInsert);
+
             $recordCmd = '-record "' . $path . '"';
         }
 

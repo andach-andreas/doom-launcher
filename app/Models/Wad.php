@@ -68,6 +68,11 @@ class Wad extends Model
         'where_to_get_ftp',
     ];
 
+    public function attempts()
+    {
+        return $this->hasMany(Attempt::class);
+    }
+
     public function compLevel()
     {
         return $this->belongsTo(CompLevel::class);

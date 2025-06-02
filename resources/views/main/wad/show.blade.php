@@ -6,6 +6,7 @@
     <p><a href="{{ route('wad.text', $wad->id) }}">View Text File</a></p>
     <p><a href="{{ route('install.play', [68, $wad->id]) }}">Play on DSDA</a></p>
     <p><a href="{{ route('dsda.sync', [$wad->id]) }}">Sync Records with DSDA</a></p>
+    <p><a href="{{ route('attempt.sync', [$wad->id]) }}">Read Attempts on Disk</a></p>
 
     <x-andach-card title="Base WAD Information">
         <div class="grid grid-cols-2">
@@ -51,7 +52,6 @@
                                 <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                                 <input type="hidden" name="map_id" value="{{ $map->id }}">
                                 <input type="hidden" name="skill" value="4">
-                                <input type="hidden" name="record" value="1">
                                 <button type="submit">Play {{ $map->internal_name }}</button>
                             </form>
 
@@ -61,6 +61,7 @@
                                 <input type="hidden" name="install_id" value="68">
                                 <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                                 <input type="hidden" name="map_id" value="{{ $map->id }}">
+                                <input type="hidden" name="record" value="1">
                                 <select name="skill">
                                     @foreach ($skills as $value => $label)
                                         <option value="{{ $value }}" {{ $value === 4 ? 'selected' : '' }}>
@@ -101,6 +102,37 @@
                             <input type="hidden" name="map_id" value="{{ $map->id }}">
                             <input type="hidden" name="demo_id" value="{{ $demo->id }}">
                             <button type="submit">Playback Demo</button>
+                        </form>
+                    </x-andach-td>
+                </tr>
+            @endforeach
+        </x-andach-tbody>
+    </x-andach-table>
+
+    <h2>Attempts</h2>
+    <x-andach-table>
+        <x-andach-thead>
+            <tr>
+                <x-andach-th>Map</x-andach-th>
+                <x-andach-th>Category</x-andach-th>
+                <x-andach-th>Time</x-andach-th>
+                <x-andach-th>Playback</x-andach-th>
+            </tr>
+        </x-andach-thead>
+        <x-andach-tbody>
+            @foreach ($wad->attempts as $attempt)
+                <tr>
+                    <x-andach-td>{{ $attempt->map->internal_name ?? '' }}</x-andach-td>
+                    <x-andach-td>{{ $attempt->category }}</x-andach-td>
+                    <x-andach-td>{{ $attempt->time }}</x-andach-td>
+                    <x-andach-td>
+                        <form method="POST" action="{{ route('install.play') }}">
+                            @csrf
+                            <input type="hidden" name="install_id" value="68">
+                            <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
+                            <input type="hidden" name="map_id" value="{{ $map->id }}">
+                            <input type="hidden" name="attempt_id" value="{{ $attempt->id }}">
+                            <button type="submit">Playback Attempt (NOT YET WORKING)</button>
                         </form>
                     </x-andach-td>
                 </tr>

@@ -9,6 +9,27 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('attempts', function (Blueprint $table) {
+            $table->integer('id')->primary();
+            $table->integer('map_id')->nullable();
+            $table->integer('wad_id');
+            $table->string('category')->nullable();
+            $table->string('time')->nullable();
+            $table->string('lmp_file')->nullable();
+
+            $table->string('version')->nullable();
+            $table->integer('skill_number')->nullable();
+            $table->integer('mode_number')->nullable();
+            $table->boolean('respawn')->nullable();
+            $table->boolean('fast')->nullable();
+            $table->boolean('nomonsters')->nullable();
+            $table->boolean('number_of_players')->nullable();
+            $table->integer('tics')->nullable();
+            $table->integer('seconds')->nullable();
+
+            $table->timestamps();
+        });
+
         Schema::create('comp_levels', function (Blueprint $table) {
             $table->id();
             $table->string('name');

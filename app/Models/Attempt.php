@@ -1,0 +1,205 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\Map;
+use App\Models\Wad;
+use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Storage;
+
+class Attempt extends Model
+{
+    protected $fillable = [
+        'id',
+        'map_id',
+        'wad_id',
+        'category',
+        'time',
+        'lmp_file',
+        'version',
+        'skill_number',
+        'mode_number',
+        'respawn',
+        'fast',
+        'nomonsters',
+        'number_of_players',
+        'tics',
+        'seconds',
+    ];
+
+    public function map()
+    {
+        return $this->belongsTo(Map::class);
+    }
+
+    public function wad()
+    {
+        return $this->belongsTo(Wad::class);
+    }
+
+    public function determineCategory(): string
+    {
+        $data = $this->parseAnalysisData();
+
+        if ($data['stroller'] ?? false) {
+            return 'Stroller';
+        }
+
+        if ($data['nomonsters'] ?? false) {
+            if ($data['100s'] ?? false) {
+                return 'NoMo 100S';
+            }
+
+            return 'NoMo';
+        }
+
+        if ($data['skill'] ?? false == 5)
+        {
+            if ($data['100s'] ?? false) {
+                return 'NM 100S';
+            }
+
+            return 'NM Speed';
+        }
+
+        if ($data['skill'] ?? false == 4)
+        {
+            if ($data['pacifist'] ?? false) {
+                return 'UV Pacifist';
+            }
+
+            if ($data['fast'] ?? false) {
+                return 'UV Fast';
+            }
+
+            if ($data['Respawn'] ?? false) {
+                return 'UV Respawn';
+            }
+
+            if ($data['tyson'] ?? false) {
+                return 'UV Tyson';
+            }
+
+            if (($data['100k'] ?? false) && ($data['100s'] ?? false)) {
+                return 'UV Max';
+            }
+
+            return 'UV Speed';
+        }
+
+        return 'Other';
+    }
+
+    public function extractAnalaysisAndLevelstat($wad): string
+    {
+        $install = Install::find(68);
+        $fullPath = Storage::disk('attempts')->path($this->lmp_file);
+
+        $exe = $install->executable_path;
+        $iwad = $wad->iwad_path;
+        $wadFile = $wad->wad_path;
+
+        // Set working directory to LMP file's directory
+        $workingDir = dirname($fullPath);
+        $baseName = pathinfo($fullPath, PATHINFO_FILENAME);
+
+        $analysisFile = $workingDir . DIRECTORY_SEPARATOR . 'analysis.txt';
+        $exportTextFile = $workingDir . DIRECTORY_SEPARATOR . $baseName . '.txt';
+        $levelstatFile = $workingDir . DIRECTORY_SEPARATOR . 'levelstat.txt';
+
+        // Build DSDA-Doom command
+        $command = [
+            $exe,
+            '-iwad', $iwad,
+            '-file', $wadFile,
+            '-fastdemo', $fullPath,
+            '-nosound',
+            '-nomusic',
+            '-export_text_file',
+            '-analysis',
+            '-levelstat',
+        ];
+
+        $process = new Process($command, $workingDir);
+        $process->run();
+
+        // Rename output files if they exist
+        $renamedAnalysis = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_analysis.txt';
+        $renamedExportText = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_description.txt';
+        $renamedLevelstat = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_levelstat.txt';
+
+        if (file_exists($analysisFile)) {
+            rename($analysisFile, $renamedAnalysis);
+        }
+
+        if (file_exists($exportTextFile)) {
+            rename($exportTextFile, $renamedExportText);
+        }
+
+        if (file_exists($levelstatFile)) {
+            rename($levelstatFile, $renamedLevelstat);
+        }
+
+        $this->updateCategoryFromAnalysis();
+        $this->updateMapFromLevelstat();
+
+        return file_exists($renamedAnalysis) ? file_get_contents($renamedAnalysis) : 'analysis failed';
+    }
+
+    public function parseAnalysisData(): ?array
+    {
+        $fullPath = Storage::disk('attempts')->path($this->lmp_file);
+        $dir = dirname($fullPath);
+        $baseName = pathinfo($fullPath, PATHINFO_FILENAME);
+        $analysisPath = $dir . DIRECTORY_SEPARATOR . $baseName . '_analysis.txt';
+
+        if (!file_exists($analysisPath)) {
+            return null;
+        }
+
+        $lines = file($analysisPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $data = [];
+
+        foreach ($lines as $line) {
+            if (preg_match('/^([a-zA-Z0-9_]+)\s+(.*)$/', trim($line), $matches)) {
+                $key = $matches[1];
+                $value = is_numeric($matches[2]) ? +$matches[2] : $matches[2];
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    public function updateCategoryFromAnalysis(): void
+    {
+        $this->category = $this->determineCategory();
+        $this->save();
+    }
+
+    public function updateMapFromLevelstat()
+    {
+        $fullPath = Storage::disk('attempts')->path($this->lmp_file);
+        $dir = dirname($fullPath);
+        $baseName = pathinfo($fullPath, PATHINFO_FILENAME);
+        $levelstatPath = $dir . DIRECTORY_SEPARATOR . $baseName . '_levelstat.txt';
+
+        if (!file_exists($levelstatPath)) {
+            return null;
+        }
+
+        $lines = file($levelstatPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $levelLines = array_filter($lines, fn($line) => preg_match('/^[A-Z0-9]{4}\s+-/', $line));
+
+        if (count($levelLines) === 1) {
+            $mapInternalName = substr(reset($levelLines), 0, 4);
+
+            $this->map_id = Map::where('internal_name', $mapInternalName)
+                ->where('wad_id', $this->wad_id)
+                ->first()
+                ->id;
+            $this->save();
+        }
+    }
+}

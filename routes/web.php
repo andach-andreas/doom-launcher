@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttemptController;
 use App\Http\Controllers\DSDAController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallController;
@@ -9,6 +10,8 @@ use App\Http\Controllers\WadController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
+
+Route::get('/attempt/{wadID}', [AttemptController::class, 'sync'])->name('attempt.sync');
 
 Route::get('/dsda/{wadID}', [DSDAController::class, 'sync'])->name('dsda.sync');
 
