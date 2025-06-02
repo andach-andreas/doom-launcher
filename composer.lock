@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8e9085c92e30eb88001d18f15fd1e55f",
+    "content-hash": "b80d73f76a4ebfe624fe4dcfc9df5454",
     "packages": [
         {
             "name": "andach/laravel-view-components",
@@ -2211,16 +2211,16 @@
         },
         {
             "name": "nativephp/electron",
-            "version": "1.1.0",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NativePHP/electron.git",
-                "reference": "82a8a51e0aa80d0962ee5e04b36b3b2c0ba8701a"
+                "reference": "e0624eba8d2994669a90180125a7c0bd8631c51a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NativePHP/electron/zipball/82a8a51e0aa80d0962ee5e04b36b3b2c0ba8701a",
-                "reference": "82a8a51e0aa80d0962ee5e04b36b3b2c0ba8701a",
+                "url": "https://api.github.com/repos/NativePHP/electron/zipball/e0624eba8d2994669a90180125a7c0bd8631c51a",
+                "reference": "e0624eba8d2994669a90180125a7c0bd8631c51a",
                 "shasum": ""
             },
             "require": {
@@ -2286,7 +2286,7 @@
                 "nativephp"
             ],
             "support": {
-                "source": "https://github.com/NativePHP/electron/tree/1.1.0"
+                "source": "https://github.com/NativePHP/electron/tree/1.0.0"
             },
             "funding": [
                 {
@@ -2298,7 +2298,7 @@
                     "type": "opencollective"
                 }
             ],
-            "time": "2025-05-23T13:26:45+00:00"
+            "time": "2025-04-07T14:55:46+00:00"
         },
         {
             "name": "nativephp/laravel",

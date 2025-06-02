@@ -19,7 +19,7 @@ php artisan native:serve
 
 ## Build
 
-Stop the local NPM Dev server if it is running, then run:
+Stop the local NPM Dev server if it is running, update the version in nativephp.php, then run:
 
 ```bash
 npm run build
