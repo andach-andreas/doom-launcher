@@ -54,7 +54,7 @@ class Attempt extends Model
             return 'NoMo';
         }
 
-        if ($data['skill'] ?? false == 5)
+        if (($data['skill'] ?? false) == 5)
         {
             if ($data['100s'] ?? false) {
                 return 'NM 100S';
@@ -63,7 +63,7 @@ class Attempt extends Model
             return 'NM Speed';
         }
 
-        if ($data['skill'] ?? false == 4)
+        if (($data['skill'] ?? false) == 4)
         {
             if ($data['pacifist'] ?? false) {
                 return 'UV Pacifist';
