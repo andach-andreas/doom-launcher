@@ -1,6 +1,10 @@
 # Changelog
 
-## v0.0.2 (In progress)
+## v0.0.3
+
+* Dump demos to video.
+
+## v0.0.2
 
 * Record demos. 
 * Analyse demos and categorise. 

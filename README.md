@@ -26,6 +26,13 @@ npm run build
 php artisan native:build
 ```
 
+Then (once build has succeeded), tag the output and upload to github. 
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
 ## Storage
 
 The storage root directory is `./storage` if using the webclient or `C:\Users\andre\AppData\Roaming\laravel-dev\storage` if using the application. 
