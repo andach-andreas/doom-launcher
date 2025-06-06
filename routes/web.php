@@ -16,6 +16,7 @@ Route::get('/attempt/{wadID}', [AttemptController::class, 'sync'])->name('attemp
 Route::get('/dsda/{wadID}', [DSDAController::class, 'sync'])->name('dsda.sync');
 
 Route::post('/install/play/', [InstallController::class, 'play'])->name('install.play');
+Route::post('/install/viddump/', [InstallController::class, 'viddump'])->name('install.viddump');
 Route::get('/install/{id}', [InstallController::class, 'show'])->name('install.show');
 Route::get('/install/{id}/extract', [InstallController::class, 'extract'])->name('install.extract');
 
@@ -30,4 +31,5 @@ Route::get('/wad', [WadController::class, 'index'])->name('wad.index');
 Route::post('/wad/download-and-extract', [WadController::class, 'downloadAndExtract'])->name('wad.download-and-extract');
 Route::get('/wad/{id}/insert-into-database', [WadController::class, 'insertIntoDatabase'])->name('wad.insert-into-database');;
 Route::get('/wad/{id}/text', [WadController::class, 'text'])->name('wad.text');;
+Route::get('/wad/{id}/viddump-all', [WadController::class, 'viddumpAll'])->name('wad.viddump-all');;
 Route::get('/wad/{id}', [WadController::class, 'show'])->name('wad.show');

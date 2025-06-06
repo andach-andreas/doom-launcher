@@ -2,6 +2,12 @@
 /dist
 /node_modules
 /public/fallback.lmp
+/public/mux_stderr.txt
+/public/mux_stdout.txt
+/public/sound_stderr.txt
+/public/sound_stdout.txt
+/public/video_stderr.txt
+/public/video_stdout.txt
 /public/build
 /public/hot
 /public/storage

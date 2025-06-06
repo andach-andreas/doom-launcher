@@ -4,6 +4,7 @@
 
 @section('content')
     <p><a href="{{ route('wad.text', $wad->id) }}">View Text File</a></p>
+    <p><a href="{{ route('wad.viddump-all', $wad->id) }}">Dump all Videos to mp4</a></p>
     <p><a href="{{ route('install.play', [68, $wad->id]) }}">Play on DSDA</a></p>
     <p><a href="{{ route('dsda.sync', [$wad->id]) }}">Sync Records with DSDA</a></p>
     <p><a href="{{ route('attempt.sync', [$wad->id]) }}">Read Attempts on Disk</a></p>
@@ -13,8 +14,8 @@
             <div>Filename</div>
             <div>{{ $wad->filename }}</div>
 
-            <div>Download Date</div>
-            <div>{{ $wad->downloaded_at }}</div>
+            <div>IDGames Path</div>
+            <div>{{ $wad->idgames_path }}</div>
 
             <div>Extract Date</div>
             <div>
@@ -40,7 +41,7 @@
                 </tr>
             </x-andach-thead>
             <x-andach-tbody>
-                @foreach ($wad->maps as $map)
+                @foreach ($maps as $map)
                     <tr>
                         <x-andach-td><a href="{{ route('map.show', $map->id) }}">{{ $map->internal_name }}</a></x-andach-td>
                         <x-andach-td>{{ $map->count_things }}</x-andach-td>
@@ -86,10 +87,11 @@
                 <x-andach-th>Category</x-andach-th>
                 <x-andach-th>Time</x-andach-th>
                 <x-andach-th>Playback</x-andach-th>
+                <x-andach-th>Video</x-andach-th>
             </tr>
         </x-andach-thead>
         <x-andach-tbody>
-            @foreach ($wad->demosLink as $demo)
+            @foreach ($demos as $demo)
                 <tr>
                     <x-andach-td>{{ $demo->map->internal_name ?? '' }}</x-andach-td>
                     <x-andach-td>{{ $demo->category }}</x-andach-td>
@@ -103,6 +105,18 @@
                             <input type="hidden" name="demo_id" value="{{ $demo->id }}">
                             <button type="submit">Playback Demo</button>
                         </form>
+                    </x-andach-td>
+                    <x-andach-td>
+                        @if ($demo->viddump_path)
+                            <a href="{{ $demo->viddump_full_path }}">{{ $demo->viddump_full_path }}</a>
+                        @else
+                            <form method="POST" action="{{ route('install.viddump') }}">
+                                @csrf
+                                <input type="hidden" name="install_id" value="68">
+                                <input type="hidden" name="demo_id" value="{{ $demo->id }}">
+                                <button type="submit">Dump Video</button>
+                            </form>
+                        @endif
                     </x-andach-td>
                 </tr>
             @endforeach
@@ -121,7 +135,7 @@
             </tr>
         </x-andach-thead>
         <x-andach-tbody>
-            @foreach ($wad->attempts as $attempt)
+            @foreach ($attempts as $attempt)
                 <tr>
                     <x-andach-td>{{ $attempt->map->internal_name ?? '' }}</x-andach-td>
                     <x-andach-td>{{ $attempt->mapCompleted->internal_name ?? '' }}</x-andach-td>

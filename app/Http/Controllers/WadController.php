@@ -102,6 +102,18 @@ class WadController extends Controller
             4 => "Ultra-Violence",
             5 => "Nightmare!"
         ];
+        $args['maps'] = $args['wad']->maps()->orderBy('internal_name', 'asc')->get();
+        $args['demos'] = $args['wad']->demosLink()
+            ->join('maps', 'demos.map_id', '=', 'maps.id')
+            ->orderBy('maps.internal_name', 'asc')
+            ->orderBy('demos.category', 'asc')
+            ->orderByRaw("
+                    (CAST(substr(demos.time, 1, instr(demos.time, ':') - 1) AS INTEGER) * 60) +
+                    CAST(substr(demos.time, instr(demos.time, ':') + 1) AS REAL)
+                ")
+            ->select('demos.*')
+            ->get();
+        $args['attempts'] = $args['wad']->attempts()->get();
 
         return view('main.wad.show', $args);
     }
@@ -113,4 +125,26 @@ class WadController extends Controller
 
         return view('main.wad.text', $args);
     }
+
+    public function viddumpAll($wadId)
+    {
+        $wad = Wad::with('demosLink')->findOrFail($wadId);
+        $results = [];
+
+        foreach ($wad->demosLink as $demo) {
+            try {
+                $output = $demo->makeViddump(68); // waits until complete
+                $results[] = ['id' => $demo->id, 'status' => 'success', 'output' => $output];
+            } catch (\Exception $e) {
+                $results[] = ['id' => $demo->id, 'status' => 'error', 'message' => $e->getMessage()];
+            }
+        }
+
+        return response()->json([
+            'status' => 'all_viddumps_processed',
+            'wad_id' => $wadId,
+            'results' => $results,
+        ]);
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Andach\DoomWadAnalysis\Demo as ApiDemo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -51,6 +52,76 @@ class Demo extends Model
     public function wad()
     {
         return $this->belongsTo(Wad::class);
+    }
+
+    public function getViddumpFullPathAttribute(): string
+    {
+        if (!$this->viddump_path) {
+            return '';
+        }
+
+        return str_replace('/', '\\', storage_path(ltrim($this->viddump_path, '/storage/')));
+    }
+
+    public function getViddumpPathAttribute(): string
+    {
+        if (!$this->lmp_file) {
+            return '';
+        }
+
+        $mp4Path = str_replace('.lmp', '.mp4', $this->lmp_file);
+
+        return Storage::disk('demos')->exists($mp4Path)
+            ? Storage::disk('demos')->url($mp4Path)
+            : '';
+    }
+
+    public function makeViddump(int $installID): string
+    {
+        if ($this->viddump_path)
+        {
+            return $this->viddump_path;
+        }
+
+        $install = Install::findOrFail($installID);
+        $wad = $this->wad;
+
+        $exe = $install->executable_path;
+        $iwad = $wad->iwad_path;
+        $wadFile = $wad->wad_path;
+        $lmpPath = Storage::disk('demos')->path($this->lmp_file);
+        $vidPath = str_replace('.lmp', '.mp4', $lmpPath);
+
+        if (!file_exists($exe) || !file_exists($iwad) || !file_exists($wadFile) || !file_exists($lmpPath)) {
+            throw new \Exception("Required file(s) missing for demo ID {$this->id}");
+        }
+
+        $complevel = $this->wad->complevel
+            ?? match ($this->wad->iwad) {
+                'doom' => 2,
+                'doom2' => 4,
+                default => null,
+            };
+
+
+        $command = sprintf(
+            'start /min "" "%s" -iwad "%s" -file "%s" -timedemo "%s" -viddump "%s" -complevel %d',
+            $exe,
+            $iwad,
+            $wadFile,
+            $lmpPath,
+            $vidPath,
+            $complevel
+        );
+
+        // Run the process synchronously and capture output
+        exec($command, $output, $exitCode);
+
+        if ($exitCode !== 0) {
+            throw new \Exception("Viddump failed for demo ID {$this->id} with exit code $exitCode");
+        }
+
+        return $vidPath;
     }
 
 }

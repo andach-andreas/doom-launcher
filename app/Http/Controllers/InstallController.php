@@ -45,11 +45,13 @@ class InstallController extends Controller
 
         $install = Install::findOrFail($validated['install_id']);
         $wad = Wad::findOrFail($validated['wad_id']);
-        $complevel = $validated['complevel'] ?? match ($wad->iwad) {
-            'doom' => 2,
-            'doom2' => 4,
-            default => $wad->complevel,
-        };
+        $complevel = $validated['complevel']
+            ?? $wad->complevel
+            ?? match ($wad->iwad) {
+                'doom' => 2,
+                'doom2' => 4,
+                default => null,
+            };
         $skill = $validated['skill'] ?? 4;
         $record = $validated['record'] ?? false;
 
@@ -139,7 +141,6 @@ class InstallController extends Controller
         ]);
     }
 
-
     public function show($id)
     {
         $args = [];
@@ -147,4 +148,17 @@ class InstallController extends Controller
 
         return view('main.install.show', $args);
     }
+
+    public function viddump(Request $request)
+    {
+        $validated = $request->validate([
+            'install_id' => 'required|integer|exists:installs,id',
+            'demo_id' => 'required|integer|exists:demos,id',
+        ]);
+
+        $demo = Demo::findOrFail($validated['demo_id']);
+
+        return $demo->makeViddump($validated['install_id']);
+    }
+
 }
