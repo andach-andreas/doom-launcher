@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RecursiveIteratorIterator;
@@ -28,6 +29,37 @@ class Install extends Model
             ->withPivot(['is_compatible', 'notes'])
             ->withTimestamps();
     }
+
+    public function buildLaunchCommand(Wad $wad, array $options = [], Demo $demo = null): string
+    {
+        $cmd = [
+            'start ""',
+            '"' . $this->executable_path . '"',
+            '-iwad "' . $wad->iwad_path . '"',
+            '-file "' . $wad->wad_path . '"',
+        ];
+
+        if ($demo) {
+            $lmpPath = Storage::disk('demos')->path($demo->lmp_file);
+            $cmd[] = '-playdemo "' . $lmpPath . '"';
+        } else {
+            if (isset($options['skill'])) {
+                $cmd[] = '-skill ' . (int)$options['skill'];
+            }
+            if (isset($options['complevel'])) {
+                $cmd[] = '-complevel ' . (int)$options['complevel'];
+            }
+            if (!empty($options['warp'])) {
+                $cmd[] = '-warp ' . $options['warp'];
+            }
+            if (!empty($options['record'])) {
+                $cmd[] = '-record "' . $options['record'] . '"';
+            }
+        }
+
+        return implode(' ', $cmd);
+    }
+
 
     public function download(): bool
     {
@@ -112,6 +144,20 @@ class Install extends Model
     public function getZipPathAttribute(): string
     {
         return 'zip/' . $this->port->slug . '/' . $this->version . '.zip';
+    }
+
+    public function hasValidExecutable(): bool
+    {
+        return file_exists($this->executable_path);
+    }
+
+    public function run(Wad $wad, array $options, Demo $demo = null)
+    {
+        $command = $this->buildLaunchCommand($wad, $options, $demo);
+        Log::info('Launching demo playback: ' . $command);
+        pclose(popen("cmd /c $command", "r"));
+
+        return response()->json(['status' => 'demo_playback_launched', 'command' => $command]);
     }
 
     public function scopeInstalled($query)

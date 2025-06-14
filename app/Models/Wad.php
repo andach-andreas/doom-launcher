@@ -188,6 +188,15 @@ class Wad extends Model
         return false;
     }
 
+    public function getComplevel(): int
+    {
+        return $this->complevel ?? match ($this->iwad) {
+            'doom' => 2,
+            'doom2' => 4,
+            default => 2,
+        };
+    }
+
     public function getFolderPathAttribute()
     {
         return storage_path('/wads/'. $this->idgames_folder.'/'. $this->filename);
@@ -243,6 +252,11 @@ class Wad extends Model
     public function getZipPathAttribute()
     {
         return storage_path('zips/'. $this->idgames_folder.'/'. $this->filename.'.zip');
+    }
+
+    public function hasAllFiles(): bool
+    {
+        return file_exists($this->iwad_path) && file_exists($this->wad_path);
     }
 
     public function insertIntoDatabase()

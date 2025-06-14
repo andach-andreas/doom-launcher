@@ -10,6 +10,7 @@ use App\Models\Wad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Symfony\Component\Process\Process;
 
 class InstallController extends Controller
@@ -41,36 +42,17 @@ class InstallController extends Controller
             'skill' => 'nullable|integer|min:1|max:5',
             'record' => 'nullable|boolean',
             'demo_id' => 'nullable|integer|exists:demos,id',
+            'category' => ['nullable', 'string', Rule::in(config('globals.demo_categories'))],
         ]);
 
         $install = Install::findOrFail($validated['install_id']);
         $wad = Wad::findOrFail($validated['wad_id']);
-        $complevel = $validated['complevel']
-            ?? $wad->complevel
-            ?? match ($wad->iwad) {
-                'doom' => 2,
-                'doom2' => 4,
-                default => null,
-            };
-        $skill = $validated['skill'] ?? 4;
-        $record = $validated['record'] ?? false;
 
-        $exe = $install->executable_path;
-        $iwad = $wad->iwad_path;
-        $wadFile = $wad->wad_path;
-
-        if (!file_exists($exe)) {
-            return response()->json(['status' => 'error', 'message' => 'Executable not found'], 404);
+        if (!$install->hasValidExecutable() || !$wad->hasAllFiles()) {
+            return response()->json(['status' => 'error', 'message' => 'Required files not found'], 404);
         }
 
-        if (!file_exists($iwad)) {
-            return response()->json(['status' => 'error', 'message' => 'IWAD file not found'], 404);
-        }
-
-        if (!file_exists($wadFile)) {
-            return response()->json(['status' => 'error', 'message' => 'WAD file not found'], 404);
-        }
-
+        // Handle demo playback
         if (!empty($validated['demo_id'])) {
             $demo = Demo::findOrFail($validated['demo_id']);
             $lmpPath = Storage::disk('demos')->path($demo->lmp_file);
@@ -79,66 +61,29 @@ class InstallController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'LMP file not found'], 404);
             }
 
-            $command = sprintf(
-                'start "" "%s" -iwad "%s" -file "%s" -playdemo "%s"',
-                $exe,
-                $iwad,
-                $wadFile,
-                $lmpPath
-            );
+            $install->run($wad, [], $demo);
 
-            Log::info('Launching demo playback with command: ' . $command);
+            session()->flash('success', 'Demo Playback Launched');
 
-            pclose(popen("cmd /c $command", "r"));
-
-            return response()->json([
-                'status' => 'demo_playback_launched',
-                'command' => $command,
-            ]);
+            return redirect()->route('wad.show', $wad->id);
         }
 
-        $warp = '';
-        $attemptInsert = ['wad_id' => $validated['wad_id']];
-        if (!empty($validated['map_id'])) {
-            $map = Map::find($validated['map_id']);
-            if ($map && $map->warp_command) {
-                $warp = $map->warp_command;
-            }
-            $attemptInsert['map_id'] = $validated['map_id'];
-        }
+        $options = [
+            'skill' => $validated['skill'] ?? 4,
+            'complevel' => $validated['complevel'] ?? $wad->getComplevel(),
+        ];
 
-        $recordCmd = '';
-        if ($record) {
-            $folder = $wad->foldername;
-            $filename = now()->format('Y-m-d_H-i-s');
-            Storage::disk('attempts')->makeDirectory($folder);
-            $attemptInsert['lmp_file'] = "{$folder}/{$filename}.lmp";
-            $path = Storage::disk('attempts')->path("{$folder}/{$filename}.lmp");
+        [$extraOptions, $map] = $this->prepareOptionsAndAttempt($validated, $wad);
+        $options = array_merge([
+            'skill' => $validated['skill'] ?? 4,
+            'complevel' => $validated['complevel'] ?? $wad->getComplevel(),
+        ], $extraOptions);
 
-            Attempt::create($attemptInsert);
+        $install->run($wad, $options);
 
-            $recordCmd = '-record "' . $path . '"';
-        }
+        session()->flash('success', 'Attempt Launched');
 
-        $command = sprintf(
-            'start "" "%s" -iwad "%s" -file "%s" -skill %d -complevel %d %s %s',
-            $exe,
-            $iwad,
-            $wadFile,
-            $skill,
-            $complevel,
-            $warp,
-            $recordCmd
-        );
-
-        Log::info('Launching WAD with command: ' . $command);
-
-        pclose(popen("cmd /c $command", "r"));
-
-        return response()->json([
-            'status' => 'launched',
-            'command' => $command,
-        ]);
+        return redirect()->route('map.show', $map->id);
     }
 
     public function show($id)
@@ -160,5 +105,37 @@ class InstallController extends Controller
 
         return $demo->makeViddump($validated['install_id']);
     }
+
+    private function prepareOptionsAndAttempt(array $validated, Wad $wad): array
+    {
+        $options = [];
+        $attemptInsert = ['wad_id' => $wad->id];
+        $map = null;
+
+        // Map & Warp
+        if (!empty($validated['map_id'])) {
+            $map = Map::find($validated['map_id']);
+            if ($map && $map->warp_command) {
+                $options['warp'] = $map->warp_command;
+            }
+            $attemptInsert['map_id'] = $map?->id;
+        }
+
+        // Recording
+        if (!empty($validated['record'])) {
+            $folder = $wad->foldername;
+            $filename = now()->format('Y-m-d_H-i-s');
+            Storage::disk('attempts')->makeDirectory($folder);
+
+            $attemptInsert['lmp_file'] = "{$folder}/{$filename}.lmp";
+            $path = Storage::disk('attempts')->path("{$folder}/{$filename}.lmp");
+
+            Attempt::create($attemptInsert);
+            $options['record'] = $path;
+        }
+
+        return [$options, $map];
+    }
+
 
 }
