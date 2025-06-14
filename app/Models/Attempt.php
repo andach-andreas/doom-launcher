@@ -44,6 +44,26 @@ class Attempt extends Model
         return $this->belongsTo(Wad::class);
     }
 
+    public function descriptionFileContent()
+    {
+        return file_get_contents($this->descriptionFileFullPath());
+    }
+
+    public function descriptionFileFullPath()
+    {
+        return Storage::disk('attempts')->path($this->descriptionFilePath());
+    }
+
+    public function descriptionFilePath()
+    {
+        return preg_replace('/\.lmp$/i', '_description.txt', $this->lmp_file);
+    }
+
+    public function descriptionFileUpdate(string $content)
+    {
+        file_put_contents($this->descriptionFileFullPath(), $content);
+    }
+
     public function determineCategory(): string
     {
         $data = $this->parseAnalysisData();

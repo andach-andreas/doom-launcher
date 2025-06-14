@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Andach\DoomWadAnalysis\Demo as ApiDemo;
 use App\Models\Attempt;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Wad;
@@ -11,6 +12,14 @@ use Illuminate\Support\Str;
 
 class AttemptController extends Controller
 {
+    public function show($id)
+    {
+        $args = [];
+        $args['attempt'] = Attempt::find($id);
+
+        return view('main.attempt.show', $args);
+    }
+
     public function sync(int $wadID)
     {
         $wad = Wad::findOrFail($wadID);
@@ -52,6 +61,16 @@ class AttemptController extends Controller
         }
 
         return redirect()->route('wad.show', $wad->id);
+    }
+
+    public function update(Request $request)
+    {
+        $attempt = Attempt::find($request->attempt_id);
+        $attempt->descriptionFileUpdate($request->description_file_content);
+
+        session()->flash('success', 'Description File Updated');
+
+        return redirect()->route('attempt.show', $attempt->id);
     }
 
 }

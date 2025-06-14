@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 
-Route::get('/attempt/{wadID}', [AttemptController::class, 'sync'])->name('attempt.sync');
+Route::get('/attempt/wad/{wadID}', [AttemptController::class, 'sync'])->name('attempt.sync');
+Route::post('/attempt/', [AttemptController::class, 'update'])->name('attempt.update');
+Route::get('/attempt/{id}', [AttemptController::class, 'show'])->name('attempt.show');
 
 Route::get('/dsda/{wadID}', [DSDAController::class, 'sync'])->name('dsda.sync');
 
