@@ -373,7 +373,7 @@ class Map extends Model
     {
         $subdir = $this->wad->idgames_folder; // e.g., 'a-c'
         $wadName = $this->wad->foldername;
-        $mapName = strtolower($this->name); // e.g., 'map01'
+        $mapName = strtolower($this->internal_name); // e.g., 'map01'
 
         $relativePath = "maps/$subdir/$wadName/{$mapName}.png";
         $outputPath = storage_path("app/public/$relativePath");

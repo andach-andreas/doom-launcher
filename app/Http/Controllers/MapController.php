@@ -27,18 +27,19 @@ class MapController extends Controller
     {
         $args = [];
         $args['map'] = Map::find($id);
-        $args['attempts'] = $args['map']->bestAttemptTimes();
-        $args['demos'] = $args['map']->bestDemoTimes();
-        $args['combined'] = [];
+        $args['attemptsTimes'] = $args['map']->bestAttemptTimes();
+        $args['demosTimes'] = $args['map']->bestDemoTimes();
+        $args['combinedTimes'] = [];
+        $args['attempts'] = $args['map']->attempts()->get();
 
         foreach (config('globals.demo_categories') as $category) {
-            $demo = $args['demos'][$category] ?? null;
-            $attempt = $args['attempts'][$category] ?? null;
+            $demo = $args['demosTimes'][$category] ?? null;
+            $attempt = $args['attemptsTimes'][$category] ?? null;
 
             $demoSeconds = $this->timeToSeconds($demo);
             $attemptSeconds = $attempt !== null ? (float)$attempt : null;
 
-            $args['combined'][$category] = [
+            $args['combinedTimes'][$category] = [
                 'demo' => $demo,
                 'attempt' => $attempt,
                 'faster' => $attemptSeconds !== null && ($demoSeconds === null || $attemptSeconds < $demoSeconds),
