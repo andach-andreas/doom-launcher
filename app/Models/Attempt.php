@@ -72,7 +72,7 @@ class Attempt extends Model
         if (($data['skill'] ?? false) == 4)
         {
             if ($data['pacifist'] ?? false) {
-                return 'UV Pacifist';
+                return 'Pacifist';
             }
 
             if ($data['fast'] ?? false) {
@@ -202,16 +202,24 @@ class Attempt extends Model
         }
 
         $lines = file($levelstatPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $levelLines = array_filter($lines, fn($line) => preg_match('/^[A-Z0-9]{4}\s+-/', $line));
+
+        $levelLines = array_filter($lines, fn($line) =>
+        preg_match('/^(E\dM\d|MAP\d\d)\s+-/', $line)
+        );
 
         if (count($levelLines) === 1) {
-            $mapInternalName = substr(reset($levelLines), 0, 4);
+            preg_match('/^(E\dM\d|MAP\d\d)/', reset($levelLines), $matches);
+            $mapInternalName = $matches[1];
 
-            $this->map_completed_id = Map::where('internal_name', $mapInternalName)
+            $map = Map::where('internal_name', $mapInternalName)
                 ->where('wad_id', $this->wad_id)
-                ->first()
-                ->id;
-            $this->save();
+                ->first();
+
+            if ($map) {
+                $this->map_completed_id = $map->id;
+                $this->save();
+            }
         }
     }
+
 }

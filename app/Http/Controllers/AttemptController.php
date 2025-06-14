@@ -14,7 +14,7 @@ class AttemptController extends Controller
     public function sync(int $wadID)
     {
         $wad = Wad::findOrFail($wadID);
-        $directory = $wad->filename;
+        $directory = $wad->foldername;
 
         if (!Storage::disk('attempts')->exists($directory)) {
             return response()->json(['status' => 'error', 'message' => 'Directory not found'], 404);

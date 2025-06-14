@@ -208,6 +208,7 @@ return new class extends Migration
         Schema::create('wads', function (Blueprint $table) {
             $table->id();
 
+            $table->string('foldername');
             $table->string('filename');
             $table->string('filename_with_extension');
             $table->string('idgames_path');

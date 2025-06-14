@@ -31,6 +31,21 @@ class Map extends Model
         'count_sectors',
     ];
 
+    public function attempts()
+    {
+        return $this->hasMany(Attempt::class);
+    }
+
+    public function attemptsCompleted()
+    {
+        return $this->hasMany(Attempt::class, 'map_completed_id');
+    }
+
+    public function demos()
+    {
+        return $this->hasMany(Demo::class);
+    }
+
     public function linedefs()
     {
         return $this->hasMany(Linedef::class);
@@ -82,6 +97,54 @@ class Map extends Model
     {
         return $this->belongsTo(Wad::class);
     }
+
+    public function bestAttemptTimes(): array
+    {
+        return $this->attemptsCompleted()
+            ->whereIn('category', config('globals.demo_categories'))
+            ->whereNotNull('seconds')
+            ->get()
+            ->groupBy('category')
+            ->map(fn($group) =>
+            $group->sortBy('seconds')->first()
+            )
+            ->mapWithKeys(fn($attempt, $category) => [$category => $attempt->time])
+            ->toArray();
+    }
+
+    public function bestCombinedTimes(): array
+    {
+        $demos = $this->bestDemoTimes();
+        $attempts = $this->bestAttemptTimes();
+
+        $result = [];
+
+        foreach (config('globals.demo_categories') as $category) {
+            $result[$category] = [
+                'demo' => $demos[$category] ?? null,
+                'attempt' => $attempts[$category] ?? null,
+            ];
+        }
+
+        return $result;
+    }
+
+
+
+    public function bestDemoTimes(): array
+    {
+        return $this->demos()
+            ->whereIn('category', config('globals.demo_categories'))
+            ->get()
+            ->groupBy('category')
+            ->map(fn($group) =>
+            $group->sortBy(fn($demo) => $demo->timeToSeconds())->first()
+            )
+            ->mapWithKeys(fn($demo, $category) => [$category => $demo->time])
+            ->toArray();
+    }
+
+
 
     public function getMapImageUrlAttribute(): string
     {
@@ -309,7 +372,7 @@ class Map extends Model
     public function renderTopDownMapImage(): string
     {
         $subdir = $this->wad->idgames_folder; // e.g., 'a-c'
-        $wadName = $this->wad->filename;
+        $wadName = $this->wad->foldername;
         $mapName = strtolower($this->name); // e.g., 'map01'
 
         $relativePath = "maps/$subdir/$wadName/{$mapName}.png";

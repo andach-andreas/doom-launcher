@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Wad - '.$wad->name)
+@section('title', 'Wad - '.$wad->foldername)
 
 @section('content')
     <p><a href="{{ route('wad.text', $wad->id) }}">View Text File</a></p>
@@ -11,8 +11,8 @@
 
     <x-andach-card title="Base WAD Information">
         <div class="grid grid-cols-2">
-            <div>Filename</div>
-            <div>{{ $wad->filename }}</div>
+            <div>Folder Name</div>
+            <div>{{ $wad->foldername }}</div>
 
             <div>IDGames Path</div>
             <div>{{ $wad->idgames_path }}</div>

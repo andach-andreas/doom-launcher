@@ -31,7 +31,7 @@
         <x-andach-tbody>
             @foreach ($wads as $wad)
                 <tr>
-                    <x-andach-td><a href="{{ route('wad.show', $wad->id) }}">{{ $wad->filename }}</a></x-andach-td>
+                    <x-andach-td><a href="{{ route('wad.show', $wad->id) }}">{{ $wad->foldername }}</a></x-andach-td>
                     <x-andach-td>{{ $wad->name }}</x-andach-td>
                     <x-andach-td>{{ $wad->comp_level_id }}</x-andach-td>
                     <x-andach-td>{{ $wad->iwad }}</x-andach-td>

@@ -124,4 +124,14 @@ class Demo extends Model
         return $vidPath;
     }
 
+    public function timeToSeconds(): float
+    {
+        if (preg_match('/^(\d+):(\d+(?:\.\d+)?)/', $this->time, $m)) {
+            return ((int) $m[1]) * 60 + (float) $m[2];
+        }
+
+        return (float) $this->time;
+    }
+
+
 }

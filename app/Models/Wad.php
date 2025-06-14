@@ -19,6 +19,7 @@ class Wad extends Model
     public array $skippedLumps = [];
 
     protected $fillable = [
+        'foldername',
         'filename',
         'filename_with_extension',
         'idgames_path',
@@ -194,7 +195,7 @@ class Wad extends Model
 
     public function getIdgamesFolderAttribute(): string
     {
-        $firstChar = strtolower(substr($this->filename, 0, 1));
+        $firstChar = strtolower(substr($this->foldername, 0, 1));
         if (is_numeric($firstChar)) return '0-9';
 
         if ($firstChar >= 'a' && $firstChar <= 'c') return 'a-c';
@@ -217,7 +218,7 @@ class Wad extends Model
     public function getTextFileContentsAttribute(): string
     {
         $folder = Storage::disk('wads')->path($this->idgames_path);
-        $wadName = $this->filename;
+        $wadName = $this->foldername;
         $primaryPath = $folder . DIRECTORY_SEPARATOR . $wadName . '.txt';
 
         if (file_exists($primaryPath)) {
@@ -264,7 +265,7 @@ class Wad extends Model
         $base = 'https://youfailit.net/pub/idgames/levels/';
         $folder = $this->iwad; // 'doom' or 'doom2'
         $sub = $this->idgames_folder;
-        $file = $this->filename . '.zip';
+        $file = $this->foldername . '.zip';
 
         return "$base$folder/$sub/$file";
     }

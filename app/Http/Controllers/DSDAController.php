@@ -17,7 +17,7 @@ class DSDAController extends Controller
 
         foreach ($wad->maps as $map)
         {
-            $url = "https://doomwads.andach.co.uk/api/v1/map/{$wad->filename}/{$map->internal_name}";
+            $url = "https://doomwads.andach.co.uk/api/v1/map/{$wad->foldername}/{$map->internal_name}";
             $response = Http::get($url);
             if (!$response->successful()) {
                 dd($url, $response);

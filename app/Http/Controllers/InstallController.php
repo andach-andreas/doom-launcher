@@ -109,7 +109,7 @@ class InstallController extends Controller
 
         $recordCmd = '';
         if ($record) {
-            $folder = $wad->filename;
+            $folder = $wad->foldername;
             $filename = now()->format('Y-m-d_H-i-s');
             Storage::disk('attempts')->makeDirectory($folder);
             $attemptInsert['lmp_file'] = "{$folder}/{$filename}.lmp";
