@@ -242,4 +242,74 @@ class Attempt extends Model
         }
     }
 
+    public function zip()
+    {
+        $fullPath = Storage::disk('attempts')->path($this->lmp_file);
+        $workingDir = dirname($fullPath);
+        $baseName = pathinfo($fullPath, PATHINFO_FILENAME); // e.g., 2025-06-02_10-01-58
+        $descriptionFile = $workingDir . DIRECTORY_SEPARATOR . $baseName . '_description.txt';
+
+        if (!file_exists($fullPath) || !file_exists($descriptionFile)) {
+            return false;
+        }
+
+        $zipSubfolder = $workingDir . DIRECTORY_SEPARATOR . $baseName;
+        if (!file_exists($zipSubfolder)) {
+            mkdir($zipSubfolder, 0777, true);
+        }
+
+        $zipFileBase = $this->zipFilename(); // e.g., evi32m2828
+        $lmpTarget = $zipSubfolder . DIRECTORY_SEPARATOR . $zipFileBase . '.lmp';
+        $txtTarget = $zipSubfolder . DIRECTORY_SEPARATOR . $zipFileBase . '.txt';
+
+        copy($fullPath, $lmpTarget);
+        copy($descriptionFile, $txtTarget);
+
+        $zipPath = $workingDir . DIRECTORY_SEPARATOR . $zipFileBase . '.zip';
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+            $zip->addFile($lmpTarget, $zipFileBase . '.lmp');
+            $zip->addFile($txtTarget, $zipFileBase . '.txt');
+            $zip->close();
+        }
+
+        // Optional: clean up temp folder
+        unlink($lmpTarget);
+        unlink($txtTarget);
+        rmdir($zipSubfolder);
+
+        return $zipPath;
+    }
+
+    public function zipExists(): bool
+    {
+        $zipPath = Storage::disk('attempts')->path(
+            dirname($this->lmp_file) . '/' . $this->zipFilename() . '.zip'
+        );
+
+        return file_exists($zipPath);
+    }
+
+
+    public function zipFilename()
+    {
+        $shortname = $this->wad->foldername;
+        $level = preg_replace('/\D/', '', $this->mapCompleted->internal_name);
+        $category = config('globals.short_codes')[$this->category];
+        $time = (int) $this->seconds;
+
+        return $shortname.$level.$category.$time;
+    }
+
+    public function zipPathFull()
+    {
+        if (!$this->zipExists()) {
+            return '';
+        }
+
+        return Storage::disk('attempts')->path(
+            dirname($this->lmp_file) . '/' . $this->zipFilename() . '.zip'
+        );
+    }
 }

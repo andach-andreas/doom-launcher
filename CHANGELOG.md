@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.0.4
+
+* Compare runs with the best DSDA time to determine what to submit. 
+* Zip up demos with automatic filenames, including the LMP and TXT file. 
+* Edit text file for an attempt in the app. 
+* Bugfixes. 
+
 ## v0.0.3
 
 * Dump demos to video.

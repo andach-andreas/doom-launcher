@@ -73,4 +73,14 @@ class AttemptController extends Controller
         return redirect()->route('attempt.show', $attempt->id);
     }
 
+    public function zip($id)
+    {
+        $attempt = Attempt::find($id);
+        $attempt->zip();
+
+        session()->flash('success', 'Zip File Updated');
+
+        return redirect()->route('attempt.show', $attempt->id);
+    }
+
 }

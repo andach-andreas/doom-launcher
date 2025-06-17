@@ -1,9 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Map '.$attempt->map->internal_name.' of '.$attempt->wad->foldername)
+@section('title', 'Map '.$attempt->mapCompleted->internal_name.' of '.$attempt->wad->foldername)
 
 @section('content')
     <p><a href="{{ route('wad.show', $attempt->wad->id) }}">Back to Wad</a></p>
+    @if ($attempt->zipExists())
+        <p>{{ $attempt->zipPathFull() }}</p>
+    @else
+        <p><a href="{{ route('attempt.zip', $attempt->id) }}">Create Zip</a></p>
+    @endif
+
 
     <h2>Attempt</h2>
     <div class="grid grid-cols-2">

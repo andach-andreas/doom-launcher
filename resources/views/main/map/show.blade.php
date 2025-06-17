@@ -43,7 +43,6 @@
     <x-andach-table>
         <x-andach-thead>
             <tr>
-                <x-andach-th>Map Attempted</x-andach-th>
                 <x-andach-th>Map Completed</x-andach-th>
                 <x-andach-th>Category</x-andach-th>
                 <x-andach-th>Time</x-andach-th>
@@ -53,7 +52,6 @@
         <x-andach-tbody>
             @foreach ($attempts as $attempt)
                 <tr>
-                    <x-andach-td><a href="{{ route('attempt.show', $attempt->id) }}">{{ $attempt->map->internal_name ?? '' }}</a></x-andach-td>
                     <x-andach-td>{{ $attempt->mapCompleted->internal_name ?? '' }}</x-andach-td>
                     <x-andach-td>{{ $attempt->category }}</x-andach-td>
                     <x-andach-td>{{ $attempt->time }}</x-andach-td>
