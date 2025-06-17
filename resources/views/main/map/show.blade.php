@@ -17,6 +17,7 @@
             <th class="border px-4 py-2">Demo Time</th>
             <th class="border px-4 py-2">Attempt Time</th>
             <th class="border px-4 py-2">Faster?</th>
+            <th class="border px-4 py-2">Start Run</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,16 @@
                     @else
                         -
                     @endif
+                </td>
+                <td class="border px-4 py-2">
+                    <form method="POST" action="{{ route('install.play') }}">
+                        @csrf
+                        <input type="hidden" name="install_id" value="68">
+                        <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
+                        <input type="hidden" name="map_id" value="{{ $map->id }}">
+                        {!! $formInputs[$category] !!}
+                        <button type="submit">Play {{ $map->internal_name }}</button>
+                    </form>
                 </td>
             </tr>
         @endforeach

@@ -20,4 +20,19 @@ return [
         'Collector'    => 'col',
         'Other'        => '',
     ],
+    'demo_form_inputs' => [
+        'UV Speed'    => '<input type="hidden" name="skill" value="4" />',
+        'UV Max'      => '<input type="hidden" name="skill" value="4" />',
+        'UV Fast'     => '<input type="hidden" name="skill" value="4" /><input type="hidden" name="runflag" value="fast" />',
+        'UV Respawn'  => '<input type="hidden" name="skill" value="4" /><input type="hidden" name="runflag" value="respawn" />',
+        'Tyson'       => '<input type="hidden" name="skill" value="4" />',
+        'Pacifist'    => '<input type="hidden" name="skill" value="4" />',
+        'Reality'     => '<input type="hidden" name="skill" value="4" />',
+        'Stroller'    => '<input type="hidden" name="skill" value="4" /><input type="hidden" name="runflag" value="stroller" />',
+        'NM Speed'    => '<input type="hidden" name="skill" value="5" />',
+        'NM 100S'     => '<input type="hidden" name="skill" value="5" />',
+        'NoMo'        => '<input type="hidden" name="skill" value="4" /><input type="hidden" name="runflag" value="nomonsters" />',
+        'NoMo 100S'   => '<input type="hidden" name="skill" value="4" /><input type="hidden" name="runflag" value="nomonsters" />',
+    ],
+
 ];

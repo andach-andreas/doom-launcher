@@ -31,6 +31,7 @@ class MapController extends Controller
         $args['demosTimes'] = $args['map']->bestDemoTimes();
         $args['combinedTimes'] = [];
         $args['attempts'] = $args['map']->attemptsCompleted()->get();
+        $args['formInputs'] = config('globals.demo_form_inputs');
 
         foreach (config('globals.demo_categories') as $category) {
             $demo = $args['demosTimes'][$category] ?? null;

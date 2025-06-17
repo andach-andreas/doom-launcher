@@ -55,6 +55,10 @@ class Install extends Model
             if (!empty($options['record'])) {
                 $cmd[] = '-record "' . $options['record'] . '"';
             }
+            if (!empty($options['runflag']))
+            {
+                $cmd[] = '-' . $options['runflag'];
+            }
         }
 
         return implode(' ', $cmd);

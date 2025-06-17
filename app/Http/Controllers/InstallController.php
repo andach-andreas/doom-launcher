@@ -43,6 +43,7 @@ class InstallController extends Controller
             'record' => 'nullable|boolean',
             'demo_id' => 'nullable|integer|exists:demos,id',
             'category' => ['nullable', 'string', Rule::in(config('globals.demo_categories'))],
+            'runflag' => 'nullable|string',
         ]);
 
         $install = Install::findOrFail($validated['install_id']);
@@ -132,6 +133,12 @@ class InstallController extends Controller
 
             Attempt::create($attemptInsert);
             $options['record'] = $path;
+        }
+
+        // Respawn, fast, etc.
+        if (!empty($validated['runflag']))
+        {
+            $options['runflag'] = $validated['runflag'];
         }
 
         return [$options, $map];

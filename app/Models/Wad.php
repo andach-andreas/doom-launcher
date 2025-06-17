@@ -74,11 +74,6 @@ class Wad extends Model
         return $this->hasMany(Attempt::class);
     }
 
-    public function compLevel()
-    {
-        return $this->belongsTo(CompLevel::class);
-    }
-
     public function demosLink()
     {
         return $this->hasMany(Demo::class, 'wad_id');
@@ -190,12 +185,32 @@ class Wad extends Model
 
     public function getComplevel(): int
     {
-        return $this->complevel ?? match ($this->iwad) {
+        if (!is_null($this->complevel)) {
+            return $this->complevel;
+        }
+
+        $engine = strtolower($this->advanced_engine_needed ?? '');
+
+        if (str_contains($engine, 'mbf21')) {
+            return 21;
+        }
+
+        if (str_contains($engine, 'mbf')) {
+            return 11;
+        }
+
+        if (str_contains($engine, 'boom')) {
+            return 9;
+        }
+
+        return match ($this->iwad) {
             'doom' => 2,
             'doom2' => 4,
             default => 2,
         };
     }
+
+
 
     public function getFolderPathAttribute()
     {
