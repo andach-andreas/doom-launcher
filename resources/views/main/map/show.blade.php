@@ -38,7 +38,7 @@
                 <td class="border px-4 py-2">
                     <form method="POST" action="{{ route('install.play') }}">
                         @csrf
-                        <input type="hidden" name="install_id" value="68">
+                        <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                         <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                         <input type="hidden" name="map_id" value="{{ $map->id }}">
                         {!! $formInputs[$category] !!}
@@ -69,7 +69,7 @@
                     <x-andach-td>
                         <form method="POST" action="{{ route('install.play') }}">
                             @csrf
-                            <input type="hidden" name="install_id" value="68">
+                            <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                             <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                             <input type="hidden" name="map_id" value="{{ $map->id }}">
                             <input type="hidden" name="attempt_id" value="{{ $attempt->id }}">

@@ -119,7 +119,7 @@ class Attempt extends Model
 
     public function extractAnalaysisAndLevelstat($wad): void
     {
-        $install = Install::find(68);
+        $install = Install::find(env('USE_INSTALL_ID'));
         $fullPath = Storage::disk('attempts')->path($this->lmp_file);
 
         $exe = $install->executable_path;

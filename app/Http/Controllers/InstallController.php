@@ -50,7 +50,7 @@ class InstallController extends Controller
         $wad = Wad::findOrFail($validated['wad_id']);
 
         if (!$install->hasValidExecutable() || !$wad->hasAllFiles()) {
-            return response()->json(['status' => 'error', 'message' => 'Required files not found'], 404);
+            return response()->json(['status' => 'error', '$install' => $install, 'message' => 'Required files not found'], 404);
         }
 
         // Handle demo playback

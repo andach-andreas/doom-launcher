@@ -5,7 +5,7 @@
 @section('content')
     <p><a href="{{ route('wad.text', $wad->id) }}">View Text File</a></p>
     <p><a href="{{ route('wad.viddump-all', $wad->id) }}">Dump all Videos to mp4</a></p>
-    <p><a href="{{ route('install.play', [68, $wad->id]) }}">Play on DSDA</a></p>
+    <p><a href="{{ route('install.play', [env('USE_INSTALL_ID'), $wad->id]) }}">Play on DSDA</a></p>
     <p><a href="{{ route('dsda.sync', [$wad->id]) }}">Sync Records with DSDA</a></p>
     <p><a href="{{ route('attempt.sync', [$wad->id]) }}">Read Attempts on Disk</a></p>
 
@@ -49,7 +49,7 @@
                         <x-andach-td>
                             <form method="POST" action="{{ route('install.play') }}">
                                 @csrf
-                                <input type="hidden" name="install_id" value="68">
+                                <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                                 <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                                 <input type="hidden" name="map_id" value="{{ $map->id }}">
                                 <input type="hidden" name="skill" value="4">
@@ -59,7 +59,7 @@
 
                             <form method="POST" action="{{ route('install.play') }}">
                                 @csrf
-                                <input type="hidden" name="install_id" value="68">
+                                <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                                 <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                                 <input type="hidden" name="map_id" value="{{ $map->id }}">
                                 <input type="hidden" name="record" value="1">
@@ -99,7 +99,7 @@
                     <x-andach-td>
                         <form method="POST" action="{{ route('install.play') }}">
                             @csrf
-                            <input type="hidden" name="install_id" value="68">
+                            <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                             <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                             <input type="hidden" name="map_id" value="{{ $map->id }}">
                             <input type="hidden" name="demo_id" value="{{ $demo->id }}">
@@ -112,7 +112,7 @@
                         @else
                             <form method="POST" action="{{ route('install.viddump') }}">
                                 @csrf
-                                <input type="hidden" name="install_id" value="68">
+                                <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                                 <input type="hidden" name="demo_id" value="{{ $demo->id }}">
                                 <button type="submit">Dump Video</button>
                             </form>
@@ -144,7 +144,7 @@
                     <x-andach-td>
                         <form method="POST" action="{{ route('install.play') }}">
                             @csrf
-                            <input type="hidden" name="install_id" value="68">
+                            <input type="hidden" name="install_id" value="{{ env('USE_INSTALL_ID') }}">
                             <input type="hidden" name="wad_id" value="{{ $map->wad->id }}">
                             <input type="hidden" name="map_id" value="{{ $map->id }}">
                             <input type="hidden" name="attempt_id" value="{{ $attempt->id }}">

@@ -133,7 +133,7 @@ class WadController extends Controller
 
         foreach ($wad->demosLink as $demo) {
             try {
-                $output = $demo->makeViddump(68); // waits until complete
+                $output = $demo->makeViddump(env('USE_INSTALL_ID')); // waits until complete
                 $results[] = ['id' => $demo->id, 'status' => 'success', 'output' => $output];
             } catch (\Exception $e) {
                 $results[] = ['id' => $demo->id, 'status' => 'error', 'message' => $e->getMessage()];
